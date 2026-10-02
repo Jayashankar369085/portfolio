@@ -10,7 +10,25 @@
     <meta name="description"
           content="Portfolio of Jayashankar, Computer Science Engineering Student and Software Developer.">
 
+    <meta name="theme-color"
+          content="#0b1120">
+
     <title>Jayashankar | Software Developer</title>
+
+    <link rel="icon" type="image/png" href="assets/images/defender.png">
+
+    <link rel="apple-touch-icon" href="assets/images/defender.png">
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
@@ -20,10 +38,45 @@
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=7">
+
+    <link rel="stylesheet" href="css/effects.css?v=4">
 </head>
 
 <body>
+
+
+<!-- ==================================================
+     FIXED LAYERS (preloader, progress, cursor, FX)
+================================================== -->
+
+<div id="preloader" aria-hidden="true">
+
+    <div class="preloader-word" id="preloaderLetters">
+
+        <span>J</span><span>A</span><span>Y</span><span>A</span><span>S</span><span>H</span><span>A</span><span>N</span><span>K</span><span>A</span><span>R</span>
+
+    </div>
+
+    <div class="preloader-bar"></div>
+
+</div>
+
+
+<div id="scrollProgress" aria-hidden="true"></div>
+
+
+<div id="cursorSpotlight" aria-hidden="true"></div>
+
+
+<div id="cursorDot" aria-hidden="true"></div>
+
+<div id="cursorRing" aria-hidden="true"></div>
+
+<div id="cursorLabel" aria-hidden="true"></div>
+
+
+<div id="easterTerminal" aria-hidden="true"></div>
 
 
 <!-- NAVBAR -->
@@ -53,6 +106,8 @@
 
             <ul class="navbar-nav ms-auto align-items-lg-center">
 
+                <span id="navIndicator" aria-hidden="true"></span>
+
                 <li class="nav-item">
                     <a class="nav-link" href="#home">Home</a>
                 </li>
@@ -70,7 +125,19 @@
                 </li>
 
                 <li class="nav-item">
+                    <a class="nav-link" href="#experience">Experience</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#coding">Coding</a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link" href="#achievements">Achievements</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#highlights">Highlights</a>
                 </li>
 
                 <li class="nav-item">
@@ -103,6 +170,12 @@
 
 <section id="home" class="hero-section">
 
+    <canvas id="heroParticles" aria-hidden="true"></canvas>
+
+    <div class="hero-grid-overlay" aria-hidden="true"></div>
+
+    <div class="hero-glow-secondary" aria-hidden="true" data-parallax="-0.06"></div>
+
     <div class="container">
 
         <div class="row align-items-center min-vh-100">
@@ -114,7 +187,7 @@
                 </p>
 
                 <h1 class="hero-title">
-                    Jayashankar
+                    <span id="heroName" class="text-gradient">Jayashankar</span>
                 </h1>
 
                 <h2 class="hero-role">
@@ -123,7 +196,7 @@
 
                     <br>
 
-                    & <span id="typingText"></span>
+                    &amp; <span id="typingText"></span>
 
                 </h2>
 
@@ -181,6 +254,34 @@
                     </a>
 
                     <a
+                        href="https://www.kaggle.com/jayashankar369085"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Kaggle">
+
+                        <svg viewBox="0 0 24 24" width="20" height="20"
+                             fill="currentColor" aria-hidden="true">
+                            <path d="M.1025 7.3475c-.0681 0-.1022.0341-.1022.102v6.752c0 .0681.034.1022.1022.1022h.7049c.068 0 .1022-.034.1022-.1023v-1.481l.4187-.3985 1.5016 1.91c.041.0477.0884.0716.143.0716h.9091c.0476 0 .0748-.0135.0817-.0407.0135-.041.0066-.075-.0206-.1023l-1.9816-2.4618 1.9002-1.8384c.0204-.0205.0237-.051.01-.092-.0137-.0339-.0408-.051-.0816-.051h-.9398c-.0477 0-.0953.024-.143.0716L.9096 11.607V7.4496c0-.0679-.0342-.102-.1022-.102zm18.0417 0c-.068 0-.102.0341-.102.102v6.752c0 .0681.034.102.102.102h.705c.068 0 .102-.034.102-.102v-6.752c0-.068-.034-.102-.102-.102zM5.961 9.6254c-.5653 0-1.11.1806-1.6343.5415-.0545.0545-.0648.102-.0307.143l.3676.5208c.0272.0477.0717.0545.133.0204.3948-.2722.783-.4086 1.1644-.4086.2927 0 .5158.0886.669.2656.1532.1771.2197.3917.1992.6436-.6606.0681-1.1545.1495-1.4813.245-.8308.2383-1.2461.6913-1.2461 1.3586 0 .4222.1533.7695.4598 1.0419.3132.2654.6845.3982 1.1134.3982.4698 0 .8545-.1125 1.1542-.3372v.1432c0 .0682.0374.102.1123.102h.7048c.068 0 .102-.0338.102-.102V11.372c0-.6604-.2245-1.1406-.6739-1.4403-.3065-.2043-.6776-.3063-1.1134-.3063zm4.3225 0c-.6742 0-1.195.2622-1.5627.7865-.3133.4359-.4699.9671-.4699 1.5936 0 .6604.1634 1.2087.4903 1.6444.3744.4972.892.7455 1.5526.7455.5313 0 .9567-.1327 1.2768-.3982v.531c0 .858-.4122 1.287-1.236 1.287-.361 0-.732-.1907-1.1132-.572a.098.098 0 00-.0716-.0306c-.034 0-.0613.0102-.0817.0307l-.4802.48c-.0408.0613-.0375.1124.0103.1532.1361.1157.2554.2129.3576.2911.102.0783.1905.1413.2656.189.354.1975.7284.2961 1.1235.2961.6808 0 1.207-.1925 1.5781-.577.3711-.3848.5567-.9484.5567-1.6903V9.8196c0-.068-.034-.102-.102-.102h-.705c-.0682 0-.1021.034-.1021.102v.2043c-.3471-.2657-.7763-.3985-1.287-.3985zm4.8021 0c-.6742 0-1.195.2622-1.5627.7865-.3132.4359-.4699.9671-.4699 1.5936 0 .6604.1633 1.2087.4903 1.6444.3744.4972.892.7455 1.5526.7455.5311 0 .9566-.1327 1.2768-.3982v.531c0 .858-.4122 1.287-1.236 1.287-.361 0-.732-.1907-1.1133-.572a.098.098 0 00-.0716-.0306c-.034 0-.0612.0102-.0816.0307l-.48.48c-.0409.0613-.0376.1124.01.1532.1363.1157.2555.2129.3576.2911.1021.0783.1906.1413.2657.189.354.1975.7285.2961 1.1237.2961.6808 0 1.2068-.1925 1.5781-.577.371-.3848.5565-.9484.5565-1.6903V9.8196c0-.068-.034-.102-.102-.102h-.7049c-.0682 0-.1022.034-.1022.102v.2043c-.3474-.2657-.7763-.3985-1.287-.3985zm6.7457 0c-.6537 0-1.185.211-1.5936.6332-.4427.4632-.664 1.0283-.664 1.6956 0 .7083.225 1.2905.6743 1.7467.463.463 1.042.6945 1.7366.6945.6467 0 1.2154-.1838 1.7057-.5515.0545-.041.0545-.0884 0-.143l-.4802-.4903c-.041-.0409-.0919-.0409-.1533 0-.2998.2112-.6368.3167-1.0112.3167-.4222 0-.7729-.119-1.052-.3576-.2452-.2248-.3882-.5038-.429-.8375h3.3197c.0679 0 .1022-.0341.1022-.1023l.01-.2244c.0341-.6878-.1668-1.26-.6025-1.7162-.4224-.4426-.9432-.664-1.5627-.664zm-.0206.7865c.3268 0 .6062.1056.8377.3166.2452.211.371.4734.378.7865h-2.4618c.0613-.3269.2077-.5925.4392-.7968.2313-.2042.5004-.3063.8069-.3063zm-11.4249.102c.6196 0 1.0146.2181 1.1848.6538v1.6854c-.1702.4358-.5755.6538-1.2155.6538-.3133 0-.5687-.0986-.7661-.2963-.2656-.2518-.3983-.6538-.3983-1.2053 0-.9941.3984-1.4914 1.1951-1.4914zm4.802 0c.6196 0 1.0148.2181 1.1851.6538h-.0002v1.6854c-.1703.4358-.5755.6538-1.2155.6538-.3132 0-.5686-.0986-.7661-.2963-.2655-.2518-.3983-.6538-.3983-1.2053 0-.9941.3983-1.4914 1.195-1.4914zm-8.3586 1.6547v1.0215c-.286.286-.6675.412-1.1441.3779-.1703-.0135-.32-.0663-.4493-.1582-.1294-.0919-.2045-.2129-.2249-.3627-.0341-.2657.1158-.47.4495-.6129.2452-.1088.7013-.1974 1.3688-.2656z"/>
+                        </svg>
+
+                    </a>
+
+                    <a
+                        href="https://leetcode.com/u/Jayashankar-P/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="LeetCode"
+                        class="leetcode-social">
+
+                        <svg viewBox="0 0 24 24" width="20" height="20"
+                             fill="currentColor" aria-hidden="true">
+                            <path d="M14.8 2.3a1 1 0 0 0-1.4 0L5.9 9.8a1 1 0 0 0 0 1.4l7.5 7.5a1 1 0 0 0 1.4-1.4L8 10.5l6.8-6.8a1 1 0 0 0 0-1.4z" opacity=".55"/>
+                            <path d="M13.4 3.7 8 9.1a1 1 0 0 0 0 1.4l5.4 5.4a1 1 0 0 0 1.4-1.4L10.1 9.8l4.7-4.7a1 1 0 0 0 0-1.4zM15.8 13.5a1 1 0 0 0-.7.3 1 1 0 0 0 0 1.4l2.1 2.1H13a1 1 0 0 0 0 2h4.2a2 2 0 0 0 1.4-3.4l-2.1-2.1a1 1 0 0 0-.7-.3z"/>
+                        </svg>
+
+                    </a>
+
+                    <a
                         href="mailto:jayashankaryt14@gmail.com"
                         aria-label="Email">
 
@@ -195,15 +296,25 @@
 
             <div class="col-lg-5 d-none d-lg-flex justify-content-center">
 
-                <div class="developer-card">
+                <div class="developer-card" id="developerCardScene">
 
-                    <div class="code-window">
+                    <div id="developerCard">
 
-                        <div class="window-buttons">
-                            <span></span>
-                            <span></span>
-                            <span></span>
+                        <div class="card-depth-badge">
+
+                            <span class="status-dot"></span>
+
+                            Open to opportunities
+
                         </div>
+
+                        <div class="code-window">
+
+                            <div class="window-buttons">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
 
 <pre><span class="code-purple">const</span> developer = {
 
@@ -219,7 +330,7 @@
 
     <span class="code-green">"Mobile Applications"</span>,
 
-    <span class="code-green">"Artificial Intelligence"</span>
+    <span class="code-green">"Artificial Intelligence"</span>,
 
     <span class="code-green">"Automobile Enthusiast"</span>
 
@@ -228,6 +339,8 @@
   learning: <span class="code-blue">true</span>
 
 };</pre>
+
+                        </div>
 
                     </div>
 
@@ -244,38 +357,46 @@
 
 <!-- ABOUT -->
 
-<section id="about" class="section-padding">
+<section id="about" class="section-padding about-section">
 
     <div class="container">
 
-        <div class="section-heading">
-
+        <div class="section-heading" data-reveal>
             <p>Get To Know More</p>
-
             <h2>About Me</h2>
-
         </div>
 
-        <div class="row align-items-center">
+        <div class="row align-items-center g-4 g-lg-5">
 
-            <div class="col-lg-5 mb-5 mb-lg-0">
+            <div class="col-lg-5" data-reveal="left">
 
                 <div class="about-card">
 
                     <div class="profile-image-wrapper">
 
-    <img
-        class="auto-image profile-image"
-        data-src="assets/images/profile"
-        alt="Jayashankar profile photo">
+                        <img
+                            class="auto-image profile-image"
+                            data-src="assets/images/profile"
+                            alt="Jayashankar profile photo">
 
-</div>
+                    </div>
+
+                    <h3 class="about-name">Jayashankar</h3>
+
+                    <p class="about-role">
+                        Software Developer · BE CSE
+                    </p>
+
+                    <div class="about-card-meta">
+                        <span><i class="bi bi-geo-alt"></i> Bengaluru, India</span>
+                        <span><i class="bi bi-code-slash"></i> Web · Mobile · AI/ML</span>
+                    </div>
 
                 </div>
 
             </div>
 
-            <div class="col-lg-7">
+            <div class="col-lg-7" data-reveal="right" data-reveal-delay="120">
 
                 <h3 class="about-title">
                     Building solutions through code.
@@ -300,6 +421,19 @@
                     real development challenges.
 
                 </p>
+
+                <div class="about-focus-chips">
+
+                    <span>Developer</span>
+                    <span>CSE Student</span>
+                    <span>AI / ML</span>
+                    <span>Web Development</span>
+                    <span>Mobile Development</span>
+                    <span>Cloud</span>
+                    <span>Problem Solving</span>
+                    <span>Cars / Automotive</span>
+
+                </div>
 
                 <div class="about-info">
 
@@ -350,164 +484,14 @@
 
     <div class="container">
 
-        <div class="section-heading">
-
+        <div class="section-heading" data-reveal>
             <p>Technologies I Work With</p>
-
             <h2>Technical Skills</h2>
-
         </div>
 
-        <div class="row g-4">
+        <div id="skillsFilterBar" data-reveal data-reveal-delay="120"></div>
 
-            <div class="col-md-6 col-lg-4">
-
-                <article class="skill-card">
-
-                    <div class="skill-icon">
-                        <i class="bi bi-window"></i>
-                    </div>
-
-                    <h3>Frontend Development</h3>
-
-                    <div class="skill-tags">
-
-                        <span>HTML</span>
-                        <span>CSS</span>
-                        <span>JavaScript</span>
-                        <span>Bootstrap 5</span>
-                        <span>React</span>
-                        <span>Responsive Design</span>
-
-                    </div>
-
-                </article>
-
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-
-                <article class="skill-card">
-
-                    <div class="skill-icon">
-                        <i class="bi bi-code-square"></i>
-                    </div>
-
-                    <h3>Programming Languages</h3>
-
-                    <div class="skill-tags">
-
-                        <span>Java</span>
-                        <span>Python</span>
-                        <span>C</span>
-                        <span>C++</span>
-                        <span>JavaScript</span>
-                        <span>Dart</span>
-
-                    </div>
-
-                </article>
-
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-
-                <article class="skill-card">
-
-                    <div class="skill-icon">
-                        <i class="bi bi-server"></i>
-                    </div>
-
-                    <h3>Backend & APIs</h3>
-
-                    <div class="skill-tags">
-
-                        <span>Node.js</span>
-                        <span>Express.js</span>
-                        <span>PHP</span>
-                        <span>FastAPI</span>
-                        <span>REST APIs</span>
-
-                    </div>
-
-                </article>
-
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-
-                <article class="skill-card">
-
-                    <div class="skill-icon">
-                        <i class="bi bi-database"></i>
-                    </div>
-
-                    <h3>Database & Cloud</h3>
-
-                    <div class="skill-tags">
-
-                        <span>MySQL</span>
-                        <span>MongoDB</span>
-                        <span>MongoDB Atlas</span>
-                        <span>Firebase</span>
-                        <span>Firestore</span>
-
-                    </div>
-
-                </article>
-
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-
-                <article class="skill-card">
-
-                    <div class="skill-icon">
-                        <i class="bi bi-phone"></i>
-                    </div>
-
-                    <h3>Mobile Development</h3>
-
-                    <div class="skill-tags">
-
-                        <span>Flutter</span>
-                        <span>Dart</span>
-                        <span>Firebase Integration</span>
-                        <span>REST API Integration</span>
-
-                    </div>
-
-                </article>
-
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-
-                <article class="skill-card">
-
-                    <div class="skill-icon">
-                        <i class="bi bi-cpu"></i>
-                    </div>
-
-                    <h3>AI, ML & Development Tools</h3>
-
-                    <div class="skill-tags">
-
-                        <span>Pandas</span>
-                        <span>NumPy</span>
-                        <span>Scikit-learn</span>
-                        <span>TensorFlow</span>
-                        <span>MediaPipe</span>
-                        <span>Git</span>
-                        <span>GitHub</span>
-
-                    </div>
-
-                </article>
-
-            </div>
-
-        </div>
+        <div class="row g-4" id="skillsGrid"></div>
 
     </div>
 
@@ -520,429 +504,568 @@
 
     <div class="container">
 
-        <div class="section-heading">
-
+        <div class="section-heading" data-reveal>
             <p>What I've Built</p>
-
             <h2>Featured Projects</h2>
-
         </div>
 
-
-        <div class="project-filters">
-
-            <button class="filter-btn active" data-filter="all">All</button>
-
-            <button class="filter-btn" data-filter="mobile">Mobile & AI</button>
-
-            <button class="filter-btn" data-filter="fullstack">Full Stack</button>
-
-            <button class="filter-btn" data-filter="web">Web</button>
-
-            <button class="filter-btn" data-filter="software">Software</button>
-
-            <button class="filter-btn" data-filter="computer-vision">
-                Computer Vision
-            </button>
-
-        </div>
+        <p class="section-lead" data-reveal data-reveal-delay="80">
+            A directory of things I've designed, engineered and shipped —
+            open any project for the full story.
+        </p>
 
 
-        <div class="row g-4 project-container">
+        <div class="project-slabs">
 
 
-            <!-- MEDIASSIST -->
+            <!-- 01 MEDIASSIST -->
 
-            <div
-                class="col-lg-8 project-item"
-                data-category="mobile">
+            <article
+                class="project-slab slab-emphasis"
+                data-project="mediassist"
+                data-project-open="mediassist"
+                data-reveal>
 
-                <article class="project-card featured-project">
+                <span class="slab-index" aria-hidden="true">01</span>
 
-                    <div class="project-image">
+                <div class="slab-main">
 
-                        <img
-                            class="auto-image"
-                            data-src="assets/images/mediassist"
-                            alt="MediAssist application preview">
+                    <div class="slab-title-row">
 
-                        <span class="featured-badge">
-                            Flagship Project
-                        </span>
+                        <h3 class="slab-name">MediAssist</h3>
 
-                        <span class="status-badge ongoing-badge">
-                            Ongoing Development
+                        <span class="slab-status slab-status-building">
+                            <span class="slab-status-dot"></span>
+                            IN PRODUCTION
                         </span>
 
                     </div>
 
-                    <div class="project-content">
+                    <p class="slab-subtitle">
+                        AI-Powered Smart Medication Management System
+                    </p>
 
-                        <div class="project-top">
+                    <div class="slab-tech">
+                        <span>Flutter</span>
+                        <span>Firebase</span>
+                        <span>Python</span>
+                        <span>ML</span>
+                    </div>
 
-                            <span class="project-number">01</span>
+                </div>
 
-                            <i class="bi bi-phone"></i>
+                <div class="slab-side">
 
-                        </div>
+                    <span class="slab-open">
+                        VIEW DETAILS
+                        <i class="bi bi-arrow-right"></i>
+                    </span>
 
-                        <h3>MediAssist</h3>
+                </div>
 
-                        <p class="project-subtitle">
-                            AI-Powered Smart Medication Management System
-                        </p>
+            </article>
 
-                        <p class="project-description">
 
-                            An ongoing Flutter healthcare application combining
-                            medication management, AI-powered symptom prediction,
-                            prescription processing, Firebase services, REST APIs,
-                            and intelligent healthcare assistance.
+            <!-- 02 INTERVUE AI -->
 
-                        </p>
+            <article
+                class="project-slab slab-emphasis"
+                data-project="intervue"
+                data-project-open="intervue"
+                data-reveal
+                data-reveal-delay="60">
 
-                        <div class="project-tech">
+                <span class="slab-index" aria-hidden="true">02</span>
 
-                            <span>Flutter</span>
-                            <span>Firebase</span>
-                            <span>Python</span>
-                            <span>FastAPI</span>
-                            <span>Machine Learning</span>
+                <div class="slab-main">
 
-                        </div>
+                    <div class="slab-title-row">
 
-                        <div class="project-links">
+                        <h3 class="slab-name">InterVue AI</h3>
 
-                            <button
-                                class="project-detail-button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#mediAssistModal">
-
-                                <i class="bi bi-arrows-angle-expand"></i>
-
-                                View Details
-
-                            </button>
-
-                        </div>
+                        <span class="slab-status slab-status-live">
+                            <span class="live-dot"></span>
+                            LIVE
+                        </span>
 
                     </div>
+
+                    <p class="slab-subtitle">
+                        AI-Powered Voice Interview Platform
+                    </p>
+
+                    <div class="slab-tech">
+                        <span>Next.js</span>
+                        <span>AI</span>
+                        <span>AssemblyAI</span>
+                        <span>AWS</span>
+                    </div>
+
+                </div>
+
+                <div class="slab-side">
+
+                    <span class="slab-open">
+                        VIEW DETAILS
+                        <i class="bi bi-arrow-right"></i>
+                    </span>
+
+                </div>
+
+            </article>
+
+
+            <!-- 03 VERIFYI -->
+
+            <article
+                class="project-slab slab-emphasis"
+                data-project="verifyi"
+                data-project-open="verifyi"
+                data-reveal
+                data-reveal-delay="120">
+
+                <span class="slab-index" aria-hidden="true">03</span>
+
+                <div class="slab-main">
+
+                    <div class="slab-title-row">
+
+                        <h3 class="slab-name">VeriFYI</h3>
+
+                        <span class="slab-status slab-status-live">
+                            <span class="live-dot"></span>
+                            LIVE
+                        </span>
+
+                    </div>
+
+                    <p class="slab-subtitle">
+                        Internship &amp; Job Scam Detector for Students
+                    </p>
+
+                    <div class="slab-tech">
+                        <span>AI</span>
+                        <span>Web</span>
+                        <span>Student Safety</span>
+                    </div>
+
+                </div>
+
+                <div class="slab-side">
+
+                    <span class="slab-open">
+                        VIEW DETAILS
+                        <i class="bi bi-arrow-right"></i>
+                    </span>
+
+                </div>
+
+            </article>
+
+
+            <!-- 04 IMPERIAL WHEELS -->
+
+            <article
+                class="project-slab"
+                data-project="imperial"
+                data-project-open="imperial"
+                data-reveal>
+
+                <span class="slab-index" aria-hidden="true">04</span>
+
+                <div class="slab-main">
+
+                    <div class="slab-title-row">
+
+                        <h3 class="slab-name">Imperial Wheels</h3>
+
+                        <span class="slab-status slab-status-live">
+                            <span class="live-dot"></span>
+                            LIVE
+                        </span>
+
+                    </div>
+
+                    <p class="slab-subtitle">
+                        Luxury Car &amp; Bike Rental Platform
+                    </p>
+
+                    <div class="slab-tech">
+                        <span>MongoDB</span>
+                        <span>Express.js</span>
+                        <span>React</span>
+                        <span>Node.js</span>
+                    </div>
+
+                </div>
+
+                <div class="slab-side">
+
+                    <span class="slab-open">
+                        VIEW DETAILS
+                        <i class="bi bi-arrow-right"></i>
+                    </span>
+
+                </div>
+
+            </article>
+
+
+            <!-- 05 BENGALURU METRO ROUTE FINDER -->
+
+            <article
+                class="project-slab"
+                data-project="metro"
+                data-project-open="metro"
+                data-reveal>
+
+                <span class="slab-index" aria-hidden="true">05</span>
+
+                <div class="slab-main">
+
+                    <div class="slab-title-row">
+
+                        <h3 class="slab-name">Bengaluru Metro Route Finder</h3>
+
+                        <span class="slab-status slab-status-done">
+                            COMPLETED
+                        </span>
+
+                    </div>
+
+                    <p class="slab-subtitle">
+                        Graph-Based Metro Route Discovery Application
+                    </p>
+
+                    <div class="slab-tech">
+                        <span>Java</span>
+                        <span>Java Swing</span>
+                        <span>DFS</span>
+                        <span>Graphs</span>
+                    </div>
+
+                </div>
+
+                <div class="slab-side">
+
+                    <span class="slab-open">
+                        VIEW DETAILS
+                        <i class="bi bi-arrow-right"></i>
+                    </span>
+
+                </div>
+
+            </article>
+
+
+            <!-- 06 CRUZELAB -->
+
+            <article
+                class="project-slab"
+                data-project="cruzelab"
+                data-project-open="cruzelab"
+                data-reveal>
+
+                <span class="slab-index" aria-hidden="true">06</span>
+
+                <div class="slab-main">
+
+                    <div class="slab-title-row">
+
+                        <h3 class="slab-name">CruzeLab</h3>
+
+                        <span class="slab-status slab-status-done">
+                            COMPLETED
+                        </span>
+
+                    </div>
+
+                    <p class="slab-subtitle">
+                        Interactive Car Customization Platform
+                    </p>
+
+                    <div class="slab-tech">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>JavaScript</span>
+                        <span>PHP</span>
+                        <span>MySQL</span>
+                    </div>
+
+                </div>
+
+                <div class="slab-side">
+
+                    <span class="slab-open">
+                        VIEW DETAILS
+                        <i class="bi bi-arrow-right"></i>
+                    </span>
+
+                </div>
+
+            </article>
+
+
+            <!-- 07 GESTURE-CONTROLLED CAR INFOTAINMENT -->
+
+            <article
+                class="project-slab"
+                data-project="gesture"
+                data-project-open="gesture"
+                data-reveal>
+
+                <span class="slab-index" aria-hidden="true">07</span>
+
+                <div class="slab-main">
+
+                    <div class="slab-title-row">
+
+                        <h3 class="slab-name">Gesture-Controlled Car Infotainment</h3>
+
+                        <span class="slab-status slab-status-done">
+                            PROTOTYPE
+                        </span>
+
+                    </div>
+
+                    <p class="slab-subtitle">
+                        Touch-Free Vehicle Interface Prototype
+                    </p>
+
+                    <div class="slab-tech">
+                        <span>Python</span>
+                        <span>MediaPipe</span>
+                        <span>Computer Vision</span>
+                        <span>JavaScript</span>
+                    </div>
+
+                </div>
+
+                <div class="slab-side">
+
+                    <span class="slab-open">
+                        VIEW DETAILS
+                        <i class="bi bi-arrow-right"></i>
+                    </span>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- VIRTUAL EXPERIENCE -->
+
+<section id="experience" class="section-padding section-alt">
+
+    <div class="container">
+
+        <div class="section-heading" data-reveal>
+            <p>Experience, but make it practical.</p>
+            <h2>Virtual Experience</h2>
+        </div>
+
+        <p class="section-lead" data-reveal data-reveal-delay="80">
+            Virtual job simulations and practical experiences that gave me a
+            taste of real engineering work.
+        </p>
+
+        <div class="experience-timeline">
+
+            <!-- DELOITTE -->
+
+            <div class="experience-entry" data-reveal>
+
+                <div class="experience-node" aria-hidden="true">
+                    <span></span>
+                </div>
+
+                <article class="experience-card">
+
+                    <div class="experience-meta">
+
+                        <span class="experience-date">
+                            <i class="bi bi-calendar3"></i>
+                            30 August 2026
+                        </span>
+
+                        <span class="experience-type">Job Simulation · Forage</span>
+
+                    </div>
+
+                    <h3 class="experience-org">
+                        Deloitte
+                        <span class="experience-team">— Data Analytics</span>
+                    </h3>
+
+                    <p class="experience-description">
+                        Worked on data analysis and forensic technology tasks
+                        to derive business insight.
+                    </p>
+
+                    <a class="experience-certificate"
+                       href="assets/certificates/deloitte-job-simulation.pdf"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       data-cursor="view"
+                       data-cursor-text="OPEN PDF ↗">
+
+                        VIEW CERTIFICATE
+                        <i class="bi bi-arrow-up-right"></i>
+
+                    </a>
 
                 </article>
 
             </div>
 
+            <!-- GE AEROSPACE -->
 
-            <!-- IMPERIAL WHEELS -->
+            <div class="experience-entry" data-reveal data-reveal-delay="120">
 
-            <div
-                class="col-lg-4 project-item"
-                data-category="fullstack">
+                <div class="experience-node" aria-hidden="true">
+                    <span></span>
+                </div>
 
-                <article class="project-card">
+                <article class="experience-card">
 
-                    <div class="project-image">
+                    <div class="experience-meta">
 
-                        <img
-                            class="auto-image"
-                            data-src="assets/images/imperial-wheels"
-                            alt="Imperial Wheels application preview">
+                        <span class="experience-date">
+                            <i class="bi bi-calendar3"></i>
+                            30 August 2026
+                        </span>
 
-                    </div>
-
-                    <div class="project-content">
-
-                        <div class="project-top">
-
-                            <span class="project-number">02</span>
-
-                            <i class="bi bi-car-front"></i>
-
-                        </div>
-
-                        <h3>Imperial Wheels</h3>
-
-                        <p class="project-subtitle">
-                            Luxury Car & Bike Rental Platform
-                        </p>
-
-                        <p class="project-description">
-
-                            MERN-stack rental platform featuring luxury vehicle
-                            discovery, rental booking workflows, administrative
-                            management, email notifications, and MongoDB Atlas
-                            integration.
-
-                        </p>
-
-                        <div class="project-tech">
-
-                            <span>MongoDB</span>
-                            <span>Express.js</span>
-                            <span>React</span>
-                            <span>Node.js</span>
-
-                        </div>
-
-                        <div class="project-links">
-
-                            <button
-                                class="project-detail-button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#imperialWheelsModal">
-
-                                <i class="bi bi-arrows-angle-expand"></i>
-
-                                View Details
-
-                            </button>
-
-                            <a
-                                href="https://github.com/Jayashankar369085/imperial-wheels"
-                                target="_blank"
-                                rel="noopener noreferrer">
-
-                                <i class="bi bi-github"></i>
-
-                                Source Code
-
-                            </a>
-
-                        </div>
+                        <span class="experience-type">Job Simulation · Forage</span>
 
                     </div>
+
+                    <h3 class="experience-org">
+                        GE Aerospace
+                        <span class="experience-team">— Explore Engineering</span>
+                    </h3>
+
+                    <p class="experience-description">
+                        Explore Engineering job simulation with the GE Aerospace
+                        engineering team.
+                    </p>
+
+                    <a class="experience-certificate"
+                       href="assets/certificates/ge-aerospace-job-simulation.pdf"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       data-cursor="view"
+                       data-cursor-text="OPEN PDF ↗">
+
+                        VIEW CERTIFICATE
+                        <i class="bi bi-arrow-up-right"></i>
+
+                    </a>
 
                 </article>
 
             </div>
 
+        </div>
 
-            <!-- METRO -->
+    </div>
 
-            <div
-                class="col-lg-4 project-item"
-                data-category="software">
+</section>
 
-                <article class="project-card">
 
-                    <div class="project-image">
+<!-- MY CODING STUFF -->
 
-                        <img
-                            class="auto-image"
-                            data-src="assets/images/metro"
-                            alt="Bengaluru Metro Route Finder preview">
+<section id="coding" class="section-padding">
 
+    <div class="container">
+
+        <div class="section-heading" data-reveal>
+            <p>Where I Practice &amp; Ship</p>
+            <h2>My Coding Stuff</h2>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- GITHUB -->
+            <div class="col-lg-6" data-reveal>
+
+                <a class="code-profile-card github-accent"
+                   href="https://github.com/Jayashankar369085"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   data-cursor="view"
+                   data-cursor-text="VISIT ↗">
+
+                    <span class="code-card-glow" aria-hidden="true"></span>
+
+                    <div class="code-card-icon github-icon">
+                        <i class="bi bi-github"></i>
                     </div>
 
-                    <div class="project-content">
+                    <div class="code-card-body">
 
-                        <div class="project-top">
+                        <h3>GitHub</h3>
+                        <span class="code-card-handle">Jayashankar369085</span>
 
-                            <span class="project-number">03</span>
-
-                            <i class="bi bi-train-front"></i>
-
-                        </div>
-
-                        <h3>Bengaluru Metro Route Finder</h3>
-
-                        <p class="project-description">
-
-                            Java Swing desktop application using graph-based
-                            data structures and Depth First Search with recursion
-                            and backtracking to discover routes across the
-                            Bengaluru Metro network.
-
+                        <p>
+                            Projects, experiments, hackathons and things
+                            I'm building.
                         </p>
 
-                        <div class="project-tech">
-
-                            <span>Java</span>
-                            <span>Java Swing</span>
-                            <span>DFS</span>
-                            <span>Graphs</span>
-
-                        </div>
-
-                        <div class="project-links">
-
-                            <button
-                                class="project-detail-button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#metroModal">
-
-                                <i class="bi bi-arrows-angle-expand"></i>
-
-                                View Details
-
-                            </button>
-
-                        </div>
+                        <span class="code-card-link">
+                            Visit GitHub
+                            <i class="bi bi-arrow-right"></i>
+                        </span>
 
                     </div>
 
-                </article>
+                </a>
 
             </div>
 
+            <!-- LEETCODE -->
+            <div class="col-lg-6" data-reveal data-reveal-delay="100">
 
-            <!-- CRUZELAB -->
+                <a class="code-profile-card leetcode-accent"
+                   href="https://leetcode.com/u/Jayashankar-P/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   data-cursor="view"
+                   data-cursor-text="VISIT ↗">
 
-            <div
-                class="col-lg-4 project-item"
-                data-category="web">
+                    <span class="code-card-glow" aria-hidden="true"></span>
 
-                <article class="project-card">
-
-                    <div class="project-image">
-
-                        <img
-                            class="auto-image"
-                            data-src="assets/images/cruzelab"
-                            alt="CruzeLab website preview">
-
+                    <div class="code-card-icon leetcode-icon">
+                        <svg viewBox="0 0 24 24" width="42" height="42"
+                             fill="currentColor" aria-hidden="true">
+                            <path d="M14.8 2.3a1 1 0 0 0-1.4 0L5.9 9.8a1 1 0 0 0 0 1.4l7.5 7.5a1 1 0 0 0 1.4-1.4L8 10.5l6.8-6.8a1 1 0 0 0 0-1.4z" opacity=".55"/>
+                            <path d="M13.4 3.7 8 9.1a1 1 0 0 0 0 1.4l5.4 5.4a1 1 0 0 0 1.4-1.4L10.1 9.8l4.7-4.7a1 1 0 0 0 0-1.4zM15.8 13.5a1 1 0 0 0-.7.3 1 1 0 0 0 0 1.4l2.1 2.1H13a1 1 0 0 0 0 2h4.2a2 2 0 0 0 1.4-3.4l-2.1-2.1a1 1 0 0 0-.7-.3z"/>
+                        </svg>
                     </div>
 
-                    <div class="project-content">
+                    <div class="code-card-body">
 
-                        <div class="project-top">
+                        <h3>LeetCode</h3>
+                        <span class="code-card-handle">Jayashankar-P</span>
 
-                            <span class="project-number">04</span>
-
-                            <i class="bi bi-tools"></i>
-
-                        </div>
-
-                        <h3>CruzeLab</h3>
-
-                        <p class="project-description">
-
-                            Interactive car customization web application
-                            combining responsive frontend interfaces, JavaScript
-                            interactions, PHP backend functionality, and MySQL
-                            database integration.
-
+                        <p>
+                            Problem solving, algorithms &amp; consistent
+                            coding practice.
                         </p>
 
-                        <div class="project-tech">
-
-                            <span>HTML</span>
-                            <span>CSS</span>
-                            <span>JavaScript</span>
-                            <span>Bootstrap</span>
-                            <span>PHP</span>
-                            <span>MySQL</span>
-
-                        </div>
-
-                        <div class="project-links">
-
-                            <button
-                                class="project-detail-button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#cruzeLabModal">
-
-                                <i class="bi bi-arrows-angle-expand"></i>
-
-                                View Details
-
-                            </button>
-
-                            <a
-                                href="https://github.com/Jayashankar369085/cruzelab"
-                                target="_blank"
-                                rel="noopener noreferrer">
-
-                                <i class="bi bi-github"></i>
-
-                                Source Code
-
-                            </a>
-
-                        </div>
+                        <span class="code-card-link">
+                            Visit LeetCode
+                            <i class="bi bi-arrow-right"></i>
+                        </span>
 
                     </div>
 
-                </article>
-
-            </div>
-
-
-            <!-- GESTURE INFOTAINMENT -->
-
-            <div
-                class="col-lg-4 project-item"
-                data-category="computer-vision">
-
-                <article class="project-card">
-
-                    <div class="project-image">
-
-                        <img
-                            class="auto-image"
-                            data-src="assets/images/gesture"
-                            alt="Gesture Controlled Car Infotainment System preview">
-
-                    </div>
-
-                    <div class="project-content">
-
-                        <div class="project-top">
-
-                            <span class="project-number">05</span>
-
-                            <i class="bi bi-hand-index-thumb"></i>
-
-                        </div>
-
-                        <h3>Gesture-Controlled Car Infotainment</h3>
-
-                        <p class="project-description">
-
-                            Computer vision prototype using real-time hand
-                            tracking and gesture recognition for touch-free
-                            interaction with automotive infotainment controls.
-
-                        </p>
-
-                        <div class="project-tech">
-
-                            <span>Python</span>
-                            <span>MediaPipe</span>
-                            <span>Computer Vision</span>
-                            <span>JavaScript</span>
-
-                        </div>
-
-                        <div class="project-links">
-
-                            <button
-                                class="project-detail-button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#gestureModal">
-
-                                <i class="bi bi-arrows-angle-expand"></i>
-
-                                View Details
-
-                            </button>
-
-                            <a
-                                href="https://github.com/Jayashankar369085/Gesture_App"
-                                target="_blank"
-                                rel="noopener noreferrer">
-
-                                <i class="bi bi-github"></i>
-
-                                Source Code
-
-                            </a>
-
-                        </div>
-
-                    </div>
-
-                </article>
+                </a>
 
             </div>
 
@@ -959,113 +1082,234 @@
 
     <div class="container">
 
-        <div class="section-heading">
-
+        <div class="section-heading" data-reveal>
             <p>Milestones & Recognition</p>
-
             <h2>Achievements</h2>
+        </div>
+
+        <div class="achievement-milestones">
+
+            <!-- OUTSTANDING STUDENT — long-term entry -->
+
+            <article class="milestone milestone-feature" data-reveal>
+
+                <span class="milestone-number" aria-hidden="true">01</span>
+
+                <div class="milestone-head">
+
+                    <span class="milestone-range">
+                        <i class="bi bi-calendar3"></i>
+                        1st Year → 3rd Year · Ongoing
+                    </span>
+
+                    <span class="milestone-tag">
+                        <i class="bi bi-mortarboard"></i>
+                        Scholarship-linked
+                    </span>
+
+                </div>
+
+                <h3 class="milestone-title">Outstanding Student</h3>
+
+                <p class="milestone-text">
+                    Recognized as an Outstanding Student every academic year —
+                    from 1st year through 3rd year so far. This recognition is
+                    associated with receiving a college scholarship.
+                </p>
+
+            </article>
+
+
+            <!-- WEBXELLENCE 2025 -->
+
+            <article class="milestone" data-reveal data-reveal-delay="80">
+
+                <span class="milestone-number" aria-hidden="true">02</span>
+
+                <span class="milestone-range">2025</span>
+
+                <h3 class="milestone-title">WebXellence — 2nd Prize</h3>
+
+                <p class="milestone-text">
+                    Secured second place in WebXellence 2025, demonstrating
+                    web development, interface design, and problem-solving
+                    skills.
+                </p>
+
+            </article>
+
+
+            <!-- WEBXELLENCE 2024 -->
+
+            <article class="milestone" data-reveal data-reveal-delay="140">
+
+                <span class="milestone-number" aria-hidden="true">03</span>
+
+                <span class="milestone-range">2024</span>
+
+                <h3 class="milestone-title">WebXellence — 3rd Prize</h3>
+
+                <p class="milestone-text">
+                    Secured third place in WebXellence 2024 through the
+                    development and presentation of a web-based software
+                    solution.
+                </p>
+
+            </article>
+
+
+            <!-- JPL CRICKET 2025 -->
+
+            <article class="milestone" data-reveal>
+
+                <span class="milestone-number" aria-hidden="true">04</span>
+
+                <span class="milestone-range">2025</span>
+
+                <h3 class="milestone-title">JPL Cricket — Runner-Up</h3>
+
+                <p class="milestone-text">
+                    Runner-up in the JPL Cricket Tournament — teamwork,
+                    coordination and competitive participation beyond
+                    academics.
+                </p>
+
+            </article>
+
+
+            <!-- JPL CRICKET 2026 -->
+
+            <article class="milestone" data-reveal data-reveal-delay="80">
+
+                <span class="milestone-number" aria-hidden="true">05</span>
+
+                <span class="milestone-range">2026</span>
+
+                <h3 class="milestone-title">JPL Cricket — Runner-Up</h3>
+
+                <p class="milestone-text">
+                    Runner-up again in the JPL Cricket Tournament — back-to-back
+                    finals with the same teamwork and competitive spirit.
+                </p>
+
+            </article>
+
+
+            <!-- CSI CODING CHALLENGE -->
+
+            <article class="milestone" data-reveal data-reveal-delay="140">
+
+                <span class="milestone-number" aria-hidden="true">06</span>
+
+                <span class="milestone-range">Coding</span>
+
+                <h3 class="milestone-title">CSI Coding Challenge</h3>
+
+                <p class="milestone-text">
+                    Received a consolation prize in the CSI Coding Challenge,
+                    demonstrating programming and algorithmic problem-solving
+                    skills.
+                </p>
+
+            </article>
 
         </div>
 
-        <div class="row g-4">
+    </div>
 
-            <div class="col-md-6 col-lg-4">
+</section>
 
-                <article class="achievement-card">
 
-                    <span class="achievement-year">2025</span>
+<!-- RECENT HIGHLIGHTS -->
 
-                    <i class="bi bi-trophy"></i>
+<section id="highlights" class="section-padding">
 
-                    <h3>2nd Prize — WebXellence</h3>
+    <div class="container">
 
-                    <p>
-                        Secured second place in WebXellence 2025,
-                        demonstrating web development, interface design,
-                        and problem-solving skills.
-                    </p>
+        <div class="section-heading" data-reveal>
+            <p>Proof Of Work</p>
+            <h2>Recent Highlights</h2>
+        </div>
 
-                </article>
+        <p class="section-lead" data-reveal data-reveal-delay="80">
+            Certificates, hackathons, certifications and milestones from
+            things I've been building and learning.
+        </p>
+
+        <div class="highlights-timeline" id="highlightsTimeline"></div>
+
+        <p class="highlights-empty" id="highlightsEmpty" hidden>
+            New certificates and hackathon highlights will appear here soon.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- BEYOND THE CODE -->
+
+<section id="beyond" class="section-padding beyond-section">
+
+    <div class="beyond-backdrop" aria-hidden="true">
+        <span class="beyond-glow"></span>
+    </div>
+
+    <div class="container">
+
+        <div class="section-heading" data-reveal>
+            <p>Software is what I build. Cars are what I obsess over.</p>
+            <h2>Beyond the Code</h2>
+        </div>
+
+        <div class="row align-items-center">
+
+            <div class="col-lg-7 mb-5 mb-lg-0" data-reveal="left">
+
+                <span class="beyond-eyebrow">
+                    <i class="bi bi-car-front-fill"></i>
+                    AUTOMOTIVE ENTHUSIAST
+                </span>
+
+                <h3 class="beyond-title">
+                    Big on cars.
+                </h3>
+
+                <p class="beyond-text">
+                    When I'm not building software, I'm usually thinking about
+                    cars — automotive design, engineering and everything about
+                    how machines like this come together.
+                </p>
+
+                <p class="beyond-text">
+                    The same curiosity that drives how software works drives
+                    how cars work too — which is probably why my projects keep
+                    drifting toward automotive tech.
+                </p>
+
+                <div class="beyond-tags">
+                    <span>ENGINEERING</span>
+                    <span>DESIGN</span>
+                    <span>PERFORMANCE</span>
+                    <span>AUTOMOTIVE ENTHUSIAST</span>
+                </div>
 
             </div>
 
-            <div class="col-md-6 col-lg-4">
+            <div class="col-lg-5" data-reveal="scale" data-reveal-delay="120">
 
-                <article class="achievement-card">
+                <div class="defender-scene" id="defenderScene">
 
-                    <span class="achievement-year">2024</span>
+                    <img
+                        id="defenderCar"
+                        class="defender-car"
+                        src="assets/images/defender.png"
+                        alt="Pixel-art Land Rover Defender">
 
-                    <i class="bi bi-award"></i>
+                    <span class="defender-headlight left" aria-hidden="true"></span>
+                    <span class="defender-headlight right" aria-hidden="true"></span>
 
-                    <h3>3rd Prize — WebXellence</h3>
-
-                    <p>
-                        Secured third place in WebXellence 2024 through
-                        the development and presentation of a web-based
-                        software solution.
-                    </p>
-
-                </article>
-
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-
-                <article class="achievement-card">
-
-                    <span class="achievement-year">2023–24</span>
-
-                    <i class="bi bi-star"></i>
-
-                    <h3>Outstanding Student Award</h3>
-
-                    <p>
-                        Recognized as an Outstanding Student for academic
-                        performance, participation, and contributions during
-                        the academic year.
-                    </p>
-
-                </article>
-
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-
-                <article class="achievement-card">
-
-                    <span class="achievement-year">Coding</span>
-
-                    <i class="bi bi-code-slash"></i>
-
-                    <h3>CSI Coding Challenge</h3>
-
-                    <p>
-                        Received a consolation prize in the CSI Coding Challenge,
-                        demonstrating programming and algorithmic
-                        problem-solving skills.
-                    </p>
-
-                </article>
-
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-
-                <article class="achievement-card">
-
-                    <span class="achievement-year">Sports</span>
-
-                    <i class="bi bi-dribbble"></i>
-
-                    <h3>2nd Prize — JPL Cricket Tournament</h3>
-
-                    <p>
-                        Secured second place in the JPL Cricket Tournament,
-                        demonstrating teamwork, coordination, and competitive
-                        participation beyond academics.
-                    </p>
-
-                </article>
+                </div>
 
             </div>
 
@@ -1082,20 +1326,19 @@
 
     <div class="container">
 
-        <div class="section-heading">
-
+        <div class="section-heading" data-reveal>
             <p>Let's Connect</p>
-
             <h2>Contact Me</h2>
-
         </div>
 
         <div class="contact-wrapper">
 
-            <div class="contact-content">
+            <div class="contact-content" data-reveal="scale">
 
                 <h3>
-                    Interested in working together?
+                    Have an idea?
+                    <br>
+                    Let's build something.
                 </h3>
 
                 <p>
@@ -1103,6 +1346,30 @@
                     collaborative projects, and opportunities where I can apply
                     my skills while continuing to learn and grow as a developer.
                 </p>
+
+                <div class="contact-cta">
+
+                    <a
+                        href="mailto:jayashankaryt14@gmail.com"
+                        class="contact-cta-button">
+
+                        Let's Talk
+
+                        <span class="arrow">
+                            <i class="bi bi-arrow-right"></i>
+                        </span>
+
+                    </a>
+
+                </div>
+
+                <button class="copy-email" id="copyEmail" type="button">
+
+                    <i class="bi bi-clipboard" id="copyEmailIcon"></i>
+
+                    <span id="copyEmailText">jayashankaryt14@gmail.com</span>
+
+                </button>
 
                 <div class="contact-links">
 
@@ -1185,886 +1452,134 @@
 
     <div class="container">
 
-        <p>
-            Designed & Built by <span>Jayashankar</span>
-        </p>
+        <div>
 
-        <a href="#home" aria-label="Back to top">
+            <div class="footer-brand">
+                <span>&lt;</span>Jayashankar<span>/&gt;</span>
+            </div>
 
-            <i class="bi bi-arrow-up"></i>
+            <p class="footer-sub">
+                Software Developer · Designed & Built by
+                <span>Jayashankar</span>
+            </p>
 
-        </a>
+        </div>
+
+        <div class="footer-social">
+
+            <a
+                href="https://github.com/Jayashankar369085"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub">
+
+                <i class="bi bi-github"></i>
+
+            </a>
+
+            <a
+                href="https://www.linkedin.com/in/jayashankar-p-a67315293"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn">
+
+                <i class="bi bi-linkedin"></i>
+
+            </a>
+
+            <a
+                href="https://www.kaggle.com/jayashankar369085"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Kaggle">
+
+                <svg viewBox="0 0 24 24" width="17" height="17"
+                     fill="currentColor" aria-hidden="true">
+                    <path d="M.1025 7.3475c-.0681 0-.1022.0341-.1022.102v6.752c0 .0681.034.1022.1022.1022h.7049c.068 0 .1022-.034.1022-.1023v-1.481l.4187-.3985 1.5016 1.91c.041.0477.0884.0716.143.0716h.9091c.0476 0 .0748-.0135.0817-.0407.0135-.041.0066-.075-.0206-.1023l-1.9816-2.4618 1.9002-1.8384c.0204-.0205.0237-.051.01-.092-.0137-.0339-.0408-.051-.0816-.051h-.9398c-.0477 0-.0953.024-.143.0716L.9096 11.607V7.4496c0-.0679-.0342-.102-.1022-.102zm18.0417 0c-.068 0-.102.0341-.102.102v6.752c0 .0681.034.102.102.102h.705c.068 0 .102-.034.102-.102v-6.752c0-.068-.034-.102-.102-.102zM5.961 9.6254c-.5653 0-1.11.1806-1.6343.5415-.0545.0545-.0648.102-.0307.143l.3676.5208c.0272.0477.0717.0545.133.0204.3948-.2722.783-.4086 1.1644-.4086.2927 0 .5158.0886.669.2656.1532.1771.2197.3917.1992.6436-.6606.0681-1.1545.1495-1.4813.245-.8308.2383-1.2461.6913-1.2461 1.3586 0 .4222.1533.7695.4598 1.0419.3132.2654.6845.3982 1.1134.3982.4698 0 .8545-.1125 1.1542-.3372v.1432c0 .0682.0374.102.1123.102h.7048c.068 0 .102-.0338.102-.102V11.372c0-.6604-.2245-1.1406-.6739-1.4403-.3065-.2043-.6776-.3063-1.1134-.3063zm4.3225 0c-.6742 0-1.195.2622-1.5627.7865-.3133.4359-.4699.9671-.4699 1.5936 0 .6604.1634 1.2087.4903 1.6444.3744.4972.892.7455 1.5526.7455.5313 0 .9567-.1327 1.2768-.3982v.531c0 .858-.4122 1.287-1.236 1.287-.361 0-.732-.1907-1.1132-.572a.098.098 0 00-.0716-.0306c-.034 0-.0613.0102-.0817.0307l-.4802.48c-.0408.0613-.0375.1124.0103.1532.1361.1157.2554.2129.3576.2911.102.0783.1905.1413.2656.189.354.1975.7284.2961 1.1235.2961.6808 0 1.207-.1925 1.5781-.577.3711-.3848.5567-.9484.5567-1.6903V9.8196c0-.068-.034-.102-.102-.102h-.705c-.0682 0-.1021.034-.1021.102v.2043c-.3471-.2657-.7763-.3985-1.287-.3985zm4.8021 0c-.6742 0-1.195.2622-1.5627.7865-.3132.4359-.4699.9671-.4699 1.5936 0 .6604.1633 1.2087.4903 1.6444.3744.4972.892.7455 1.5526.7455.5311 0 .9566-.1327 1.2768-.3982v.531c0 .858-.4122 1.287-1.236 1.287-.361 0-.732-.1907-1.1133-.572a.098.098 0 00-.0716-.0306c-.034 0-.0612.0102-.0816.0307l-.48.48c-.0409.0613-.0376.1124.01.1532.1363.1157.2555.2129.3576.2911.1021.0783.1906.1413.2657.189.354.1975.7285.2961 1.1237.2961.6808 0 1.2068-.1925 1.5781-.577.371-.3848.5565-.9484.5565-1.6903V9.8196c0-.068-.034-.102-.102-.102h-.7049c-.0682 0-.1022.034-.1022.102v.2043c-.3474-.2657-.7763-.3985-1.287-.3985zm6.7457 0c-.6537 0-1.185.211-1.5936.6332-.4427.4632-.664 1.0283-.664 1.6956 0 .7083.225 1.2905.6743 1.7467.463.463 1.042.6945 1.7366.6945.6467 0 1.2154-.1838 1.7057-.5515.0545-.041.0545-.0884 0-.143l-.4802-.4903c-.041-.0409-.0919-.0409-.1533 0-.2998.2112-.6368.3167-1.0112.3167-.4222 0-.7729-.119-1.052-.3576-.2452-.2248-.3882-.5038-.429-.8375h3.3197c.0679 0 .1022-.0341.1022-.1023l.01-.2244c.0341-.6878-.1668-1.26-.6025-1.7162-.4224-.4426-.9432-.664-1.5627-.664zm-.0206.7865c.3268 0 .6062.1056.8377.3166.2452.211.371.4734.378.7865h-2.4618c.0613-.3269.2077-.5925.4392-.7968.2313-.2042.5004-.3063.8069-.3063zm-11.4249.102c.6196 0 1.0146.2181 1.1848.6538v1.6854c-.1702.4358-.5755.6538-1.2155.6538-.3133 0-.5687-.0986-.7661-.2963-.2656-.2518-.3983-.6538-.3983-1.2053 0-.9941.3984-1.4914 1.1951-1.4914zm4.802 0c.6196 0 1.0148.2181 1.1851.6538h-.0002v1.6854c-.1703.4358-.5755.6538-1.2155.6538-.3132 0-.5686-.0986-.7661-.2963-.2655-.2518-.3983-.6538-.3983-1.2053 0-.9941.3983-1.4914 1.195-1.4914zm-8.3586 1.6547v1.0215c-.286.286-.6675.412-1.1441.3779-.1703-.0135-.32-.0663-.4493-.1582-.1294-.0919-.2045-.2129-.2249-.3627-.0341-.2657.1158-.47.4495-.6129.2452-.1088.7013-.1974 1.3688-.2656z"/>
+                </svg>
+
+            </a>
+
+            <a
+                href="https://leetcode.com/u/Jayashankar-P/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LeetCode">
+
+                <svg viewBox="0 0 24 24" width="17" height="17"
+                     fill="currentColor" aria-hidden="true">
+                    <path d="M14.8 2.3a1 1 0 0 0-1.4 0L5.9 9.8a1 1 0 0 0 0 1.4l7.5 7.5a1 1 0 0 0 1.4-1.4L8 10.5l6.8-6.8a1 1 0 0 0 0-1.4z" opacity=".55"/>
+                    <path d="M13.4 3.7 8 9.1a1 1 0 0 0 0 1.4l5.4 5.4a1 1 0 0 0 1.4-1.4L10.1 9.8l4.7-4.7a1 1 0 0 0 0-1.4zM15.8 13.5a1 1 0 0 0-.7.3 1 1 0 0 0 0 1.4l2.1 2.1H13a1 1 0 0 0 0 2h4.2a2 2 0 0 0 1.4-3.4l-2.1-2.1a1 1 0 0 0-.7-.3z"/>
+                </svg>
+
+            </a>
+
+            <a
+                href="mailto:jayashankaryt14@gmail.com"
+                aria-label="Email">
+
+                <i class="bi bi-envelope-fill"></i>
+
+            </a>
+
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+
+            <button
+                id="terminalTrigger"
+                class="terminal-trigger"
+                type="button"
+                title="Open terminal (press `)">
+
+                <i class="bi bi-terminal"></i>
+
+                ~/jayashankar
+
+            </button>
+
+            <a href="#home" aria-label="Back to top">
+
+                <i class="bi bi-arrow-up"></i>
+
+            </a>
+
+        </div>
 
     </div>
 
 </footer>
 
 
-<!-- ==================================================
-     PROJECT MODALS
-================================================== -->
-
-
-<!-- MEDIASSIST -->
-
-<div
-    class="modal fade project-modal"
-    id="mediAssistModal"
-    tabindex="-1"
-    aria-hidden="true">
-
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <div>
-
-                    <span class="modal-project-status">
-                        Ongoing Development
-                    </span>
-
-                    <h2 class="modal-title">
-                        MediAssist
-                    </h2>
-
-                    <p>
-                        AI-Powered Smart Medication Management System
-                    </p>
-
-                </div>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close">
-                </button>
-
-            </div>
-
-            <div class="modal-body">
-
-                <div class="modal-project-intro">
-
-                    <p>
-                        MediAssist is an ongoing Flutter-based healthcare
-                        application designed to combine medication management,
-                        artificial intelligence, prescription processing,
-                        medical report assistance, and doctor appointment
-                        services within a single mobile application.
-                    </p>
-
-                    <p>
-                        The system combines a Flutter frontend, Firebase services,
-                        and a Python FastAPI backend. A machine-learning symptom
-                        prediction model analyzes user-selected symptoms and
-                        returns a predicted disease, confidence score, disease
-                        description, precautions, medications, diet suggestions,
-                        and workout recommendations.
-                    </p>
-
-                </div>
-
-                <div class="modal-detail-grid">
-
-                    <div class="modal-detail-card">
-
-                        <h4>
-                            <i class="bi bi-lightbulb"></i>
-                            Key Features
-                        </h4>
-
-                        <ul>
-                            <li>AI-powered symptom analysis</li>
-                            <li>Machine-learning disease prediction</li>
-                            <li>Prescription OCR processing integration</li>
-                            <li>Medication reminder system</li>
-                            <li>Medical report interpretation</li>
-                            <li>Doctor discovery and appointment booking</li>
-                            <li>Firebase authentication and Firestore storage</li>
-                            <li>Flutter and REST API integration</li>
-                        </ul>
-
-                    </div>
-
-                    <div class="modal-detail-card">
-
-                        <h4>
-                            <i class="bi bi-person-workspace"></i>
-                            My Contribution
-                        </h4>
-
-                        <ul>
-                            <li>Leading the four-member development team</li>
-                            <li>Flutter application development</li>
-                            <li>UI/UX implementation</li>
-                            <li>Firebase and authentication integration</li>
-                            <li>Medication reminder module</li>
-                            <li>AI symptom analyzer development</li>
-                            <li>FastAPI backend integration</li>
-                            <li>OCR module integration</li>
-                            <li>System integration and final testing</li>
-                        </ul>
-
-                    </div>
-
-                </div>
-
-                <div class="modal-tech-stack">
-
-                    <h4>Technology Stack</h4>
-
-                    <div class="project-tech">
-
-                        <span>Flutter</span>
-                        <span>Dart</span>
-                        <span>Firebase</span>
-                        <span>Firestore</span>
-                        <span>Python</span>
-                        <span>FastAPI</span>
-                        <span>Scikit-learn</span>
-                        <span>Machine Learning</span>
-                        <span>REST APIs</span>
-
-                    </div>
-
-                </div>
-
-                <div class="project-gallery">
-
-                    <h4>Project Screenshots</h4>
-
-                    <div class="row g-3">
-
-                        <div class="col-md-4">
-                            <img
-                                class="auto-image gallery-image"
-                                data-src="assets/images/mediassist-1"
-                                alt="MediAssist screenshot 1">
-                        </div>
-
-                        <div class="col-md-4">
-                            <img
-                                class="auto-image gallery-image"
-                                data-src="assets/images/mediassist-2"
-                                alt="MediAssist screenshot 2">
-                        </div>
-
-                        <div class="col-md-4">
-                            <img
-                                class="auto-image gallery-image"
-                                data-src="assets/images/mediassist-3"
-                                alt="MediAssist screenshot 3">
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- IMPERIAL WHEELS -->
-
-<div
-    class="modal fade project-modal"
-    id="imperialWheelsModal"
-    tabindex="-1"
-    aria-hidden="true">
-
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <div>
-
-                    <span class="modal-project-status completed-status">
-                        Full-Stack Project
-                    </span>
-
-                    <h2 class="modal-title">
-                        Imperial Wheels
-                    </h2>
-
-                    <p>
-                        Luxury Car & Bike Rental Platform
-                    </p>
-
-                </div>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close">
-                </button>
-
-            </div>
-
-            <div class="modal-body">
-
-                <div class="modal-project-intro">
-
-                    <p>
-                        Imperial Wheels is a MERN-stack luxury car and bike
-                        rental platform designed to provide users with a modern
-                        vehicle discovery and booking experience while providing
-                        administrators with tools for managing vehicles and
-                        rental requests.
-                    </p>
-
-                    <p>
-                        The application combines React-based interfaces with
-                        Node.js and Express REST APIs, MongoDB Atlas for cloud
-                        database storage, and Nodemailer for booking-related
-                        email notifications.
-                    </p>
-
-                </div>
-
-                <div class="modal-detail-grid">
-
-                    <div class="modal-detail-card">
-
-                        <h4>
-                            <i class="bi bi-lightbulb"></i>
-                            Key Features
-                        </h4>
-
-                        <ul>
-                            <li>Luxury car and motorcycle listings</li>
-                            <li>Detailed vehicle information pages</li>
-                            <li>Vehicle image galleries</li>
-                            <li>Rental booking workflow</li>
-                            <li>Administrative dashboard</li>
-                            <li>Booking approval and rejection</li>
-                            <li>Email notification system</li>
-                            <li>Vehicle management operations</li>
-                            <li>MongoDB Atlas integration</li>
-                        </ul>
-
-                    </div>
-
-                    <div class="modal-detail-card">
-
-                        <h4>
-                            <i class="bi bi-diagram-3"></i>
-                            Technical Implementation
-                        </h4>
-
-                        <ul>
-                            <li>React component-based architecture</li>
-                            <li>Responsive user interfaces</li>
-                            <li>Node.js and Express backend</li>
-                            <li>RESTful API communication</li>
-                            <li>MongoDB database models</li>
-                            <li>Cloud-hosted MongoDB Atlas storage</li>
-                            <li>Nodemailer email notifications</li>
-                            <li>Administrative booking workflows</li>
-                        </ul>
-
-                    </div>
-
-                </div>
-
-                <div class="modal-tech-stack">
-
-                    <h4>Technology Stack</h4>
-
-                    <div class="project-tech">
-
-                        <span>MongoDB</span>
-                        <span>MongoDB Atlas</span>
-                        <span>Express.js</span>
-                        <span>React</span>
-                        <span>Node.js</span>
-                        <span>JavaScript</span>
-                        <span>REST APIs</span>
-                        <span>Nodemailer</span>
-
-                    </div>
-
-                </div>
-
-                <div class="modal-source-link">
-
-                    <a
-                        href="https://github.com/Jayashankar369085/imperial-wheels"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="btn btn-primary-custom">
-
-                        <i class="bi bi-github"></i>
-
-                        View Source Code
-
-                    </a>
-
-                </div>
-
-                <div class="project-gallery">
-
-                    <h4>Project Screenshots</h4>
-
-                    <div class="row g-3">
-
-                        <div class="col-md-4">
-                            <img
-                                class="auto-image gallery-image"
-                                data-src="assets/images/imperial-wheels-1"
-                                alt="Imperial Wheels screenshot 1">
-                        </div>
-
-                        <div class="col-md-4">
-                            <img
-                                class="auto-image gallery-image"
-                                data-src="assets/images/imperial-wheels-2"
-                                alt="Imperial Wheels screenshot 2">
-                        </div>
-
-                        <div class="col-md-4">
-                            <img
-                                class="auto-image gallery-image"
-                                data-src="assets/images/imperial-wheels-3"
-                                alt="Imperial Wheels screenshot 3">
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- METRO -->
-
-<div
-    class="modal fade project-modal"
-    id="metroModal"
-    tabindex="-1"
-    aria-hidden="true">
-
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <div>
-
-                    <span class="modal-project-status completed-status">
-                        Java Desktop Application
-                    </span>
-
-                    <h2 class="modal-title">
-                        Bengaluru Metro Route Finder
-                    </h2>
-
-                    <p>
-                        Graph-Based Metro Route Discovery Application
-                    </p>
-
-                </div>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close">
-                </button>
-
-            </div>
-
-            <div class="modal-body">
-
-                <div class="modal-project-intro">
-
-                    <p>
-                        Bengaluru Metro Route Finder is a Java Swing desktop
-                        application that models metro stations and their
-                        connections using graph-based data structures.
-                    </p>
-
-                    <p>
-                        The application uses Depth First Search with recursion
-                        and backtracking to discover routes between source and
-                        destination stations. It displays route information,
-                        station count, interchange count, and calculated fares
-                        through an interactive Java Swing interface.
-                    </p>
-
-                </div>
-
-                <div class="modal-detail-grid">
-
-                    <div class="modal-detail-card">
-
-                        <h4>
-                            <i class="bi bi-lightbulb"></i>
-                            Key Features
-                        </h4>
-
-                        <ul>
-                            <li>Source and destination station selection</li>
-                            <li>Graph-based metro network representation</li>
-                            <li>DFS route discovery</li>
-                            <li>Recursive backtracking</li>
-                            <li>Route display through Java Swing GUI</li>
-                            <li>Station counting</li>
-                            <li>Interchange detection and counting</li>
-                            <li>Fare calculation</li>
-                        </ul>
-
-                    </div>
-
-                    <div class="modal-detail-card">
-
-                        <h4>
-                            <i class="bi bi-diagram-3"></i>
-                            Technical Concepts
-                        </h4>
-
-                        <ul>
-                            <li>Java Collections Framework</li>
-                            <li>HashMap-based graph representation</li>
-                            <li>Adjacency relationships</li>
-                            <li>Depth First Search</li>
-                            <li>Recursion</li>
-                            <li>Backtracking</li>
-                            <li>Java Swing GUI development</li>
-                            <li>Event-driven programming</li>
-                        </ul>
-
-                    </div>
-
-                </div>
-
-                <div class="project-gallery">
-
-                    <h4>Project Screenshots</h4>
-
-                    <div class="row g-3">
-
-                        <div class="col-md-4">
-                            <img
-                                class="auto-image gallery-image"
-                                data-src="assets/images/metro-1"
-                                alt="Metro Route Finder screenshot 1">
-                        </div>
-
-                        <div class="col-md-4">
-                            <img
-                                class="auto-image gallery-image"
-                                data-src="assets/images/metro-2"
-                                alt="Metro Route Finder screenshot 2">
-                        </div>
-
-                        <div class="col-md-4">
-                            <img
-                                class="auto-image gallery-image"
-                                data-src="assets/images/metro-3"
-                                alt="Metro Route Finder screenshot 3">
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- CRUZELAB -->
-
-<div
-    class="modal fade project-modal"
-    id="cruzeLabModal"
-    tabindex="-1"
-    aria-hidden="true">
-
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <div>
-
-                    <span class="modal-project-status completed-status">
-                        Web Application
-                    </span>
-
-                    <h2 class="modal-title">
-                        CruzeLab
-                    </h2>
-
-                    <p>
-                        Interactive Car Customization Platform
-                    </p>
-
-                </div>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close">
-                </button>
-
-            </div>
-
-            <div class="modal-body">
-
-                <div class="modal-project-intro">
-
-                    <p>
-                        CruzeLab is an interactive web application centered on
-                        vehicle exploration and customization through a
-                        responsive user interface.
-                    </p>
-
-                    <p>
-                        The project combines HTML, CSS, Bootstrap, and JavaScript
-                        interfaces with PHP backend functionality and MySQL
-                        database integration through XAMPP.
-                    </p>
-
-                </div>
-
-                <div class="modal-detail-grid">
-
-                    <div class="modal-detail-card">
-
-                        <h4>
-                            <i class="bi bi-lightbulb"></i>
-                            Key Features
-                        </h4>
-
-                        <ul>
-                            <li>Vehicle exploration interface</li>
-                            <li>Interactive car customization workflows</li>
-                            <li>Responsive web layouts</li>
-                            <li>Interactive frontend components</li>
-                            <li>PHP backend functionality</li>
-                            <li>MySQL database integration</li>
-                        </ul>
-
-                    </div>
-
-                    <div class="modal-detail-card">
-
-                        <h4>
-                            <i class="bi bi-code-square"></i>
-                            Technology Stack
-                        </h4>
-
-                        <ul>
-                            <li>HTML5</li>
-                            <li>CSS3</li>
-                            <li>JavaScript</li>
-                            <li>Bootstrap 5</li>
-                            <li>PHP</li>
-                            <li>MySQL</li>
-                            <li>XAMPP</li>
-                        </ul>
-
-                    </div>
-
-                </div>
-
-                <div class="modal-source-link">
-
-                    <a
-                        href="https://github.com/Jayashankar369085/cruzelab"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="btn btn-primary-custom">
-
-                        <i class="bi bi-github"></i>
-
-                        View Source Code
-
-                    </a>
-
-                </div>
-
-                <div class="project-gallery">
-
-                    <h4>Project Screenshots</h4>
-
-                    <div class="row g-3">
-
-                        <div class="col-md-4">
-                            <img
-                                class="auto-image gallery-image"
-                                data-src="assets/images/cruzelab-1"
-                                alt="CruzeLab screenshot 1">
-                        </div>
-
-                        <div class="col-md-4">
-                            <img
-                                class="auto-image gallery-image"
-                                data-src="assets/images/cruzelab-2"
-                                alt="CruzeLab screenshot 2">
-                        </div>
-
-                        <div class="col-md-4">
-                            <img
-                                class="auto-image gallery-image"
-                                data-src="assets/images/cruzelab-3"
-                                alt="CruzeLab screenshot 3">
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- GESTURE INFOTAINMENT -->
-
-<div
-    class="modal fade project-modal"
-    id="gestureModal"
-    tabindex="-1"
-    aria-hidden="true">
-
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <div>
-
-                    <span class="modal-project-status completed-status">
-                        Computer Vision Prototype
-                    </span>
-
-                    <h2 class="modal-title">
-                        Gesture-Controlled Car Infotainment
-                    </h2>
-
-                    <p>
-                        Touch-Free Vehicle Interface Prototype
-                    </p>
-
-                </div>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close">
-                </button>
-
-            </div>
-
-            <div class="modal-body">
-
-                <div class="modal-project-intro">
-
-                    <p>
-                        Gesture-Controlled Car Infotainment is a computer vision
-                        prototype designed to explore touch-free interaction
-                        with automotive infotainment systems.
-                    </p>
-
-                    <p>
-                        The system uses Python and MediaPipe to perform real-time
-                        hand landmark detection and gesture recognition. These
-                        gestures are mapped to controls for music, navigation,
-                        communication, and other dashboard interactions.
-                    </p>
-
-                </div>
-
-                <div class="modal-detail-grid">
-
-                    <div class="modal-detail-card">
-
-                        <h4>
-                            <i class="bi bi-lightbulb"></i>
-                            Key Features
-                        </h4>
-
-                        <ul>
-                            <li>Real-time hand tracking</li>
-                            <li>Gesture recognition</li>
-                            <li>Touch-free interface interaction</li>
-                            <li>Music controls</li>
-                            <li>Navigation interface controls</li>
-                            <li>Communication controls</li>
-                            <li>Automotive dashboard prototype</li>
-                        </ul>
-
-                    </div>
-
-                    <div class="modal-detail-card">
-
-                        <h4>
-                            <i class="bi bi-code-square"></i>
-                            Technology Stack
-                        </h4>
-
-                        <ul>
-                            <li>Python</li>
-                            <li>MediaPipe</li>
-                            <li>Computer Vision</li>
-                            <li>Hand Landmark Detection</li>
-                            <li>JavaScript</li>
-                            <li>Web Interface Development</li>
-                        </ul>
-
-                    </div>
-
-                </div>
-
-                <div class="modal-source-link">
-
-                    <a
-                        href="https://github.com/Jayashankar369085/Gesture_App"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="btn btn-primary-custom">
-
-                        <i class="bi bi-github"></i>
-
-                        View Source Code
-
-                    </a>
-
-                </div>
-
-                <div class="project-gallery">
-
-                    <h4>Project Screenshots</h4>
-
-                    <div class="row g-3">
-
-                        <div class="col-md-4">
-                            <img
-                                class="auto-image gallery-image"
-                                data-src="assets/images/gesture-1"
-                                alt="Gesture Infotainment screenshot 1">
-                        </div>
-
-                        <div class="col-md-4">
-                            <img
-                                class="auto-image gallery-image"
-                                data-src="assets/images/gesture-2"
-                                alt="Gesture Infotainment screenshot 2">
-                        </div>
-
-                        <div class="col-md-4">
-                            <img
-                                class="auto-image gallery-image"
-                                data-src="assets/images/gesture-3"
-                                alt="Gesture Infotainment screenshot 3">
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- FULL SCREEN IMAGE VIEWER -->
-
-<div
-    id="imageLightbox"
-    class="image-lightbox"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Project screenshot viewer"
-    aria-hidden="true">
-
-    <button
-        id="lightboxClose"
-        class="lightbox-close"
-        type="button"
-        aria-label="Close image viewer">
-
-        <i class="bi bi-x-lg"></i>
-
-    </button>
-
-    <button
-        id="lightboxPrevious"
-        class="lightbox-navigation lightbox-previous"
-        type="button"
-        aria-label="Previous image">
-
-        <i class="bi bi-chevron-left"></i>
-
-    </button>
-
-    <div class="lightbox-content">
-
-        <img
-            id="lightboxImage"
-            src=""
-            alt="Project screenshot">
-
-        <p id="lightboxCaption"></p>
-
-        <span id="lightboxCounter"></span>
-
-    </div>
-
-    <button
-        id="lightboxNext"
-        class="lightbox-navigation lightbox-next"
-        type="button"
-        aria-label="Next image">
-
-        <i class="bi bi-chevron-right"></i>
-
-    </button>
-
-</div>
-
-
 <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
 </script>
 
-<script src="js/script.js"></script>
+<script src="js/utils.js?v=1"></script>
+
+<script src="js/preloader.js?v=1"></script>
+
+<script src="js/content.js?v=7"></script>
+
+<script src="js/nav.js?v=1"></script>
+
+<script src="js/hero.js?v=2"></script>
+
+<script src="js/projects-detail.js?v=1"></script>
+
+<script src="js/project-fx.js?v=5"></script>
+
+<script src="js/cursor.js?v=2"></script>
+
+<script src="js/skills.js?v=1"></script>
+
+<script src="js/reveal.js?v=1"></script>
+
+<script src="js/terminal.js?v=4"></script>
+
+<script src="js/contact.js?v=1"></script>
+
+<script src="js/main.js?v=2"></script>
 
 </body>
 
