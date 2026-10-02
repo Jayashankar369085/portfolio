@@ -445,12 +445,12 @@ const Content = (() => {
             title: "Kaggriculture — Autonomous Farming Agent",
             kind: "KAGGLE COMPETITION",
             year: "2026",
-            context: "Kaggle · Ongoing",
+            context: "Kaggle · Competition Ended",
             description:
-                "Competing in Kaggle's AI-agent competition — building an " +
+                "Took part in Kaggle's AI-agent competition — built an " +
                 "autonomous agent that manages a virtual farm, deciding what " +
                 "to plant, harvest and sell on every turn to maximise income " +
-                "against thousands of rival agents.",
+                "against thousands of rival agents across the leaderboard.",
             profileUrl: "https://www.kaggle.com/jayashankar369085",
             feature: true,
             file: "assets/certificates/kagriculture-2k26.pdf"
@@ -501,7 +501,7 @@ const Content = (() => {
         {
             title: "AWS Certification",
             kind: "CERTIFICATION",
-            year: "2025",
+            year: "2026",
             context: "Amazon Web Services",
             description:
                 "Earned my AWS certification — cloud foundations, core " +

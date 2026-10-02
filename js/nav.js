@@ -216,12 +216,44 @@ const Nav = (() => {
     }
 
 
+    /* ---------- Scroll progress bar ----------
+       Thin gradient line under the navbar; fill is driven by
+       scaleX so it never triggers layout. */
+
+    function initScrollProgress() {
+
+        if (document.getElementById("scrollProgress")) {
+            return;
+        }
+
+        const bar = document.createElement("div");
+
+        bar.id = "scrollProgress";
+        bar.setAttribute("aria-hidden", "true");
+
+        document.body.appendChild(bar);
+
+        MotionUtils.onScroll(() => {
+
+            const max =
+                document.documentElement.scrollHeight - window.innerHeight;
+
+            const progress = max > 0
+                ? Math.min(1, window.scrollY / max)
+                : 0;
+
+            bar.style.transform = `scaleX(${progress})`;
+        });
+    }
+
+
     function init() {
 
         initScrollState();
         initActiveSection();
         initSmoothScroll();
         initMobileMenu();
+        initScrollProgress();
     }
 
 

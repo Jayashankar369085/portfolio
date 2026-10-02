@@ -94,6 +94,15 @@ body[data-cursor-visible="false"] #cursorLabel {
 }
 
 
+/* Light-mode halo so the dot never disappears on white. */
+
+body.light-theme #cursorDot {
+    box-shadow:
+        0 0 0 2.5px rgba(108, 99, 255, 0.28),
+        0 0 12px rgba(108, 99, 255, 0.45);
+}
+
+
 #cursorRing {
     display: flex;
     align-items: center;
@@ -120,7 +129,9 @@ body[data-cursor-visible="false"] #cursorLabel {
 
     padding: 8px 14px;
 
-    background: rgba(11, 17, 32, 0.92);
+    /* Theme-aware: dark pill in dark mode, white pill in
+       light mode — label text stays readable in both. */
+    background: var(--surface);
 
     color: var(--text-primary);
 
@@ -150,6 +161,72 @@ body[data-cursor-visible="false"] #cursorLabel {
     background: rgba(108, 99, 255, 0.1);
 
     border-color: rgba(139, 133, 255, 0.9);
+}
+
+/* ---------- Cursor aura ----------
+   A thin conic-gradient glow rides the ring, spinning
+   slowly at rest and whipping around on interactive
+   targets. Pure CSS — no per-frame JS cost. */
+
+#cursorRing::before {
+    content: "";
+
+    position: absolute;
+    inset: -3px;
+
+    border-radius: 50%;
+
+    background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        rgba(139, 133, 255, 0.95) 80deg,
+        rgba(56, 189, 248, 0.65) 170deg,
+        transparent 260deg
+    );
+
+    -webkit-mask:
+        radial-gradient(
+            farthest-side,
+            transparent calc(100% - 2.5px),
+            #000 calc(100% - 2px)
+        );
+    mask:
+        radial-gradient(
+            farthest-side,
+            transparent calc(100% - 2.5px),
+            #000 calc(100% - 2px)
+        );
+
+    animation: cursor-ring-spin 5s linear infinite;
+
+    pointer-events: none;
+}
+
+
+#cursorRing[data-state="link"]::before {
+    animation-duration: 2.2s;
+}
+
+
+#cursorRing[data-state="project"]::before {
+    animation-duration: 1.4s;
+}
+
+
+@keyframes cursor-ring-spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* Dot gets a soft glow so it reads on any background. */
+
+#cursorDot {
+    box-shadow:
+        0 0 10px rgba(139, 133, 255, 0.85),
+        0 0 22px rgba(108, 99, 255, 0.4);
 }
 
 #cursorLabel[data-state="project"],
@@ -412,6 +489,35 @@ body.loaded #heroParticles {
         rgba(108, 99, 255, 0.04) 35%,
         transparent 70%
     );
+
+    pointer-events: none;
+
+    will-change: transform;
+}
+
+
+/* ---------- Scroll progress bar ---------- */
+
+#scrollProgress {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    z-index: 1035;
+
+    height: 3px;
+
+    background: linear-gradient(
+        90deg,
+        var(--primary),
+        #38bdf8,
+        rgba(167, 139, 250, 0.9)
+    );
+
+    transform: scaleX(0);
+    transform-origin: left;
 
     pointer-events: none;
 
@@ -1456,6 +1562,85 @@ body.light-theme .navbar.navbar-scrolled {
     );
 
     border-radius: 50%;
+
+    will-change: transform;
+}
+
+
+/* ---------- Speed lines ----------
+   Horizontal streaks flying left-to-right across
+   the section — the sense of motion the Defender
+   scene needs. JS fills the lane with spans. */
+
+.beyond-speed-lines {
+
+    position: absolute;
+    inset: 0;
+
+    overflow: hidden;
+}
+
+
+.beyond-speed-lines span {
+
+    position: absolute;
+
+    left: -140px;
+
+    width: var(--h, 60px);
+    height: 2px;
+
+    border-radius: 2px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(139, 133, 255, 0.5),
+        transparent
+    );
+
+    animation: beyond-speed-fly var(--dur, 3s) linear infinite;
+
+    animation-delay: var(--delay, 0s);
+
+    opacity: 0;
+}
+
+
+@keyframes beyond-speed-fly {
+
+    0% {
+        transform: translateX(0);
+        opacity: 0;
+    }
+
+    12% {
+        opacity: 0.7;
+    }
+
+    85% {
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: translateX(
+            calc(100vw + 280px)
+        );
+        opacity: 0;
+    }
+}
+
+
+/* Light theme: darker streaks so they still read. */
+
+body.light-theme .beyond-speed-lines span {
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(108, 99, 255, 0.35),
+        transparent
+    );
 }
 
 
@@ -1571,6 +1756,78 @@ body.light-theme .navbar.navbar-scrolled {
     justify-content: center;
 
     perspective: 900px;
+
+    cursor: none;
+}
+
+
+/* ---------- Exhaust dust ----------
+   Filled by beyond-fx.js while the cursor is on the
+   scene; puffs drift back-left and dissolve. */
+
+.defender-dust {
+
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    overflow: visible;
+}
+
+
+.dust-particle {
+
+    position: absolute;
+
+    bottom: 4%;
+
+    width: 14px;
+    height: 14px;
+
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle,
+        rgba(148, 163, 184, 0.4),
+        rgba(148, 163, 184, 0.12) 60%,
+        transparent 75%
+    );
+
+    animation: dust-drift var(--dur, 1.2s) ease-out forwards;
+
+    pointer-events: none;
+}
+
+
+body.light-theme .dust-particle {
+
+    background: radial-gradient(
+        circle,
+        rgba(100, 116, 139, 0.35),
+        rgba(100, 116, 139, 0.1) 60%,
+        transparent 75%
+    );
+}
+
+
+@keyframes dust-drift {
+
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(calc(var(--scale, 1) * 0.5));
+    }
+
+    25% {
+        opacity: 0.85;
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(calc(var(--dx, 50px) * -1), -26px)
+            scale(var(--scale, 1));
+    }
 }
 
 
@@ -1640,6 +1897,109 @@ body.light-theme .navbar.navbar-scrolled {
 .defender-scene:hover .defender-headlight.left,
 .defender-scene:hover .defender-headlight.right {
     opacity: 1;
+
+    animation: headlight-flicker 2.6s ease-in-out infinite;
+}
+
+
+@keyframes headlight-flicker {
+
+    0%, 100% { opacity: 1; }
+    92% { opacity: 1; }
+    95% { opacity: 0.45; }
+    97% { opacity: 0.9; }
+}
+
+
+/* Headlight beams — visible cones shooting forward. */
+
+.defender-beam {
+
+    position: absolute;
+
+    top: 44%;
+
+    width: 190px;
+    height: 90px;
+
+    background: linear-gradient(
+        90deg,
+        rgba(255, 244, 214, 0.22),
+        transparent 80%
+    );
+
+    clip-path: polygon(0 38%, 100% 0, 100% 100%, 0 62%);
+
+    opacity: 0;
+
+    filter: blur(3px);
+
+    transition: opacity 0.5s ease;
+
+    pointer-events: none;
+}
+
+
+.defender-beam.left {
+
+    left: -6%;
+
+    transform: scaleX(-1);
+}
+
+
+.defender-beam.right {
+
+    right: -6%;
+}
+
+
+.defender-scene:hover .defender-beam.left,
+.defender-scene:hover .defender-beam.right {
+    opacity: 1;
+}
+
+
+/* Road shadow: grounds the car and squashes with float. */
+
+.defender-shadow {
+
+    position: absolute;
+
+    bottom: -4%;
+    left: 50%;
+
+    width: 62%;
+    height: 26px;
+
+    transform: translateX(-50%);
+
+    background: radial-gradient(
+        ellipse,
+        rgba(3, 6, 18, 0.5),
+        transparent 68%
+    );
+
+    animation: shadow-breathe 5.5s ease-in-out infinite;
+
+    pointer-events: none;
+}
+
+
+body.light-theme .defender-shadow {
+
+    background: radial-gradient(
+        ellipse,
+        rgba(15, 23, 42, 0.22),
+        transparent 68%
+    );
+}
+
+
+@keyframes shadow-breathe {
+
+    0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 1; }
+    50% { transform: translateX(-50%) scaleX(0.82); opacity: 0.72; }
 }
 
 

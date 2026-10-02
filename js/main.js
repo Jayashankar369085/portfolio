@@ -22,6 +22,7 @@
             Nav,
             Hero,
             ProjectDetails,
+            BeyondFX,
             Cursor,
             ProjectFX,
             Skills,

@@ -3260,3 +3260,57 @@ body.light-theme .certifications-empty {
         display: none;
     }
 }
+
+
+/* ==================================================
+   GLOBAL POLISH — section heading sweep bar
+================================================== */
+
+.section-heading {
+    position: relative;
+}
+
+
+.section-heading::after {
+    content: "";
+
+    display: block;
+
+    width: 72px;
+    height: 3px;
+
+    margin: 22px auto 0;
+
+    border-radius: 3px;
+
+    background: linear-gradient(
+        90deg,
+        var(--primary),
+        #38bdf8,
+        var(--primary)
+    );
+
+    background-size: 200% 100%;
+
+    animation: heading-sweep 5s ease-in-out infinite;
+}
+
+
+@keyframes heading-sweep {
+
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+
+body.light-theme .section-heading::after {
+
+    background: linear-gradient(
+        90deg,
+        var(--primary),
+        #0ea5e9,
+        var(--primary)
+    );
+
+    background-size: 200% 100%;
+}
