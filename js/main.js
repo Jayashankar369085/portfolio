@@ -28,7 +28,8 @@
             Skills,
             Reveal,
             EasterEggs,
-            Contact
+            Contact,
+            RemoteContent
         ];
 
         modules.forEach(module => {

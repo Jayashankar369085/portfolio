@@ -139,5 +139,53 @@ const Reveal = (() => {
     }
 
 
-    return { init, initHeadingLines, initParallax };
+    /* Re-observe nodes injected after boot (Supabase content sync). */
+    function refresh() {
+
+        const targets = document.querySelectorAll(
+            "[data-reveal]:not(.reveal-visible)"
+        );
+
+        if (targets.length === 0) {
+            return;
+        }
+
+        if (MotionUtils.prefersReducedMotion) {
+            targets.forEach(target =>
+                target.classList.add("reveal-visible")
+            );
+            return;
+        }
+
+        const observer = new IntersectionObserver(
+            (entries, obs) => {
+
+                entries.forEach(entry => {
+
+                    if (!entry.isIntersecting) {
+                        return;
+                    }
+
+                    const element = entry.target;
+
+                    const delay = parseInt(
+                        element.dataset.revealDelay || "0", 10
+                    );
+
+                    if (delay > 0) {
+                        element.style.transitionDelay = `${delay}ms`;
+                    }
+
+                    element.classList.add("reveal-visible");
+                    obs.unobserve(element);
+                });
+            },
+            { threshold: 0.12, rootMargin: "0px 0px -60px 0px" }
+        );
+
+        targets.forEach(target => observer.observe(target));
+    }
+
+
+    return { init, initHeadingLines, initParallax, refresh };
 })();

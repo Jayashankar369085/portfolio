@@ -66,13 +66,13 @@ const Contact = (() => {
         const iconElement =
             document.getElementById("copyEmailIcon");
 
-        const email =
-            labelElement
-                ? labelElement.textContent.trim()
-                : "jayashankaryt14@gmail.com";
-
-
         button.addEventListener("click", async () => {
+
+            /* Read at click time so admin-updated addresses apply. */
+            const email =
+                labelElement
+                    ? labelElement.textContent.trim()
+                    : "jayashankaryt14@gmail.com";
 
             let copied = false;
 

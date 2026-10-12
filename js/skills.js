@@ -218,6 +218,74 @@ const Skills = (() => {
     }
 
 
+    /* ---------- Remote content ----------
+       Supabase rows replace the built-in categories while
+       keeping the exact same cards, filters and hover fx. */
+
+    let boundFilterButtons = [];
+    let boundCards = [];
+
+    function setData(rows) {
+
+        if (!Array.isArray(rows) || rows.length === 0) {
+            return;
+        }
+
+        const grid = document.getElementById("skillsGrid");
+        const filterBar = document.getElementById("skillsFilterBar");
+
+        if (!grid || !filterBar) {
+            return;
+        }
+
+        /* Group rows by category, preserving display order. */
+        const categories = [];
+        const indexByLabel = {};
+
+        rows.forEach(row => {
+
+            const label = row.category || "General";
+
+            if (!(label in indexByLabel)) {
+                indexByLabel[label] = categories.length;
+                categories.push({
+                    id: label.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+                                 .replace(/^-|-$/g, "") || "general",
+                    label,
+                    icon: row.category_icon || "bi-code-square",
+                    skills: []
+                });
+            }
+
+            categories[indexByLabel[label]].skills.push(row.name);
+        });
+
+        SKILL_CATEGORIES.length = 0;
+        categories.forEach(category => SKILL_CATEGORIES.push(category));
+
+        grid.innerHTML = "";
+        filterBar.innerHTML = "";
+
+        renderFilterBar(filterBar);
+        renderCards(grid);
+
+        const newRows =
+            Array.from(grid.querySelectorAll(".col-md-6, .col-lg-4"));
+
+        const newCards =
+            Array.from(grid.querySelectorAll(".skill-card"));
+
+        /* Old nodes were removed with innerHTML — bind fresh ones. */
+        boundFilterButtons = [];
+        boundCards = [];
+
+        initFiltering(newRows);
+        initHoverFocus(newCards);
+
+        newRows.forEach(row => row.classList.add("reveal-visible"));
+    }
+
+
     function init() {
 
         const grid =
@@ -239,10 +307,14 @@ const Skills = (() => {
         const cards =
             Array.from(grid.querySelectorAll(".skill-card"));
 
+        boundFilterButtons =
+            Array.from(document.querySelectorAll(".skills-filter-btn"));
+        boundCards = cards;
+
         initFiltering(rows);
         initHoverFocus(cards);
     }
 
 
-    return { init };
+    return { init, setData };
 })();

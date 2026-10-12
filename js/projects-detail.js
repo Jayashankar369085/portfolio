@@ -275,6 +275,59 @@ const ProjectDetails = (() => {
     const PROJECT_ORDER =
         ["mediassist", "intervue", "verifyi", "imperial", "metro", "cruzelab", "gesture"];
 
+
+    /* ---------- Remote content ----------
+       Supabase rows replace the built-in map so slabs,
+       order and detail copy follow the admin dashboard. */
+
+    function setData(rows) {
+
+        if (!Array.isArray(rows) || rows.length === 0) {
+            return;
+        }
+
+        const next = {};
+        const order = [];
+
+        rows.forEach((row, position) => {
+
+            if (!row || !row.slug) {
+                return;
+            }
+
+            const list = value => Array.isArray(value) ? value : [];
+
+            next[row.slug] = {
+                index: String(position + 1).padStart(2, "0"),
+                name: row.name || row.slug,
+                subtitle: row.subtitle || "",
+                status: row.status || "",
+                statusKind: row.status_kind || "done",
+                tagline: row.tagline || "",
+                tech: list(row.tech),
+                fullTech: list(row.full_tech),
+                overview: list(row.overview),
+                problem: row.problem || "",
+                features: list(row.features),
+                contributionLabel:
+                    row.contribution_label || "My Contribution",
+                contribution: list(row.contribution),
+                liveUrl: row.live_url || null,
+                githubUrl: row.github_url || null
+            };
+
+            order.push(row.slug);
+        });
+
+        if (order.length === 0) {
+            return;
+        }
+
+        Object.assign(PROJECTS, next);
+        PROJECT_ORDER.length = 0;
+        order.forEach(slug => PROJECT_ORDER.push(slug));
+    }
+
     let overlay = null;
     let currentId = null;
     let isOpen = false;
@@ -536,5 +589,5 @@ const ProjectDetails = (() => {
     }
 
 
-    return { init, open, close };
+    return { init, open, close, setData };
 })();

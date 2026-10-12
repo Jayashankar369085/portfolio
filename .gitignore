@@ -1,0 +1,13 @@
+# Environment files must never be committed.
+# (js/config.js only ever holds PUBLIC values — see SETUP.md.)
+.env
+.env.local
+.env.*.local
+
+# Dependencies / editors
+node_modules/
+.DS_Store
+*.log
+
+# Supabase local dev artifacts (migrations in supabase/migrations are committed)
+supabase/.temp/

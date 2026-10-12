@@ -624,7 +624,7 @@ const Content = (() => {
     }
 
 
-    function renderHighlights() {
+    function renderHighlights(remoteItems) {
 
         const grid = document.getElementById("highlightsTimeline");
 
@@ -634,9 +634,15 @@ const Content = (() => {
             return;
         }
 
+        /* Supabase content replaces the built-in list once the
+           database answers; otherwise the static list stays. */
+        const items = Array.isArray(remoteItems)
+            ? remoteItems
+            : HIGHLIGHTS;
+
         grid.innerHTML = "";
 
-        HIGHLIGHTS.forEach(item => {
+        items.forEach(item => {
 
             const entry = document.createElement("article");
 
@@ -685,8 +691,10 @@ const Content = (() => {
             }
         });
 
-        if (HIGHLIGHTS.length === 0 && emptyNote) {
+        if (items.length === 0 && emptyNote) {
             emptyNote.hidden = false;
+        } else if (emptyNote) {
+            emptyNote.hidden = true;
         }
     }
 
@@ -726,5 +734,5 @@ const Content = (() => {
     }
 
 
-    return { init };
+    return { init, renderHighlights, certificateExists };
 })();
