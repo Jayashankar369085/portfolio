@@ -1,9 +1,15 @@
 /* ==================================================
-   CUSTOM CURSOR + MAGNETIC ELEMENTS
-   Dot + trailing ring, state-driven labels, click
-   bounce, magnetic attraction. Desktop (fine pointer,
-   motion allowed) only — native cursor untouched on
-   touch devices and under reduced motion.
+   CUSTOM CURSOR — MINI SPORTS CAR + MAGNETIC ELEMENTS
+   A single 24×30px inline-SVG car (see index.html)
+   follows the pointer with a slight lag and leans into
+   turns; it scales up and glows brighter over
+   interactive elements and shrinks over text so it
+   never covers what you are reading.
+
+   Desktop (fine pointer, motion allowed) only — the
+   native cursor is untouched on touch devices and
+   under prefers-reduced-motion, and the car itself is
+   pointer-events: none so it can never block a click.
 ================================================== */
 
 const Cursor = (() => {
@@ -12,200 +18,277 @@ const Cursor = (() => {
         return { init: () => {} };
     }
 
-    const dot = document.getElementById("cursorDot");
-    const ring = document.getElementById("cursorRing");
-    const label = document.getElementById("cursorLabel");
+    const car = document.getElementById("cursorCar");
 
-    if (!dot || !ring) {
+    if (!car) {
         return { init: () => {} };
     }
 
 
-    /* ---------- Ring interpolation state ---------- */
+    /* ---------- Tuning (premium, restrained) ---------- */
 
-    let dotX = window.innerWidth / 2;
-    let dotY = window.innerHeight / 2;
-    let ringX = dotX;
-    let ringY = dotY;
-    let ringScale = 1;
-    let targetRingScale = 1;
+    const FOLLOW_RATE = 18;   /* position ease — subtle delay, no lag */
+    const STEER_RATE = 9;     /* rotation ease — heavier than position */
+    const SCALE_RATE = 14;    /* hover/press ease */
 
-    let visible = false;
-    let pressed = false;
-    let downScale = 1;
-    let pressedTime = 0;
+    const MAX_STEER = 28;     /* deg the nose may lean off centre */
+    const IDLE_STRAIGHTEN = 0.04; /* per frame, when the pointer rests */
 
-    /* Set by hover targets: { state, text } */
-    let cursorState = { state: "default", text: "" };
+    const PRESS_SCALE = 0.84; /* click squash */
 
-
-    /* ---------- State definitions ---------- */
-
-    const STATE_LABELS = {
-        project: "VIEW PROJECT →",
-        explore: "EXPLORE",
-        view: "VIEW"
+    const STATE_SCALES = {
+        default: 1,
+        interactive: 1.26,
+        project: 1.3,
+        text: 0.6,
+        edit: 1
     };
 
 
-    function applyStateToElements() {
+    /* ---------- Per-frame state ---------- */
 
-        const { state, text } = cursorState;
+    let x = window.innerWidth / 2;
+    let y = window.innerHeight / 2;
+    let lastX = x;
+    let lastY = y;
 
-        label.textContent = STATE_LABELS[state] || text || "";
+    let steer = 0;
+    let targetSteer = 0;
 
-        dot.dataset.state = state;
-        ring.dataset.state = state;
-        label.dataset.state = state;
+    let scale = 1;
+    let targetScale = STATE_SCALES.default;
 
-        targetRingScale =
-            state === "project" ? 3.4 :
-            state === "explore" ? 2.6 :
-            state === "link" ? 1.55 :
-            state === "text" ? 0.62 :
-            state === "hidden" ? 0 : 1;
+    let pressFactor = 1;
+    let pressed = false;
+    let pressedAt = 0;
+
+    let visible = false;
+    let state = "default";
+
+
+    /* ---------- Visibility ----------
+       Hidden until the pointer really moves; snapping the
+       position on show avoids a glide from a stale spot
+       (first paint, a return to the tab, a resize). */
+
+    function showCursor() {
+
+        if (visible) {
+            return;
+        }
+
+        visible = true;
+
+        x = lastX = MotionUtils.clamp(
+            MotionUtils.pointer.x, 0, window.innerWidth
+        );
+        y = lastY = MotionUtils.clamp(
+            MotionUtils.pointer.y, 0, window.innerHeight
+        );
+
+        document.body.dataset.cursorVisible = "true";
+        document.body.dataset.customCursor = "on";
     }
 
 
-    /* ---------- Interaction wiring (event delegation) ---------- */
+    function hideCursor() {
 
-    function isMagneticCandidate(element) {
-        return element.closest(
-            ".magnetic, .btn-primary-custom, .btn-outline-custom, " +
-            ".theme-button, .social-links a, .filter-btn, " +
-            ".navbar-brand, .footer a, .contact-cta-button, " +
-            ".slab-open, .detail-back, .detail-close, " +
-            ".detail-cta, .detail-next"
-        );
+        if (!visible) {
+            return;
+        }
+
+        visible = false;
+        pressed = false;
+
+        document.body.dataset.cursorVisible = "false";
     }
 
 
-    function updateCursorState(event) {
+    /* ---------- Hover state (event delegation) ---------- */
 
-        const target = event.target;
+    function stateFor(target) {
 
-        const projectCard = target.closest(".project-slab");
+        if (!target || typeof target.closest !== "function") {
+            return "default";
+        }
 
-        if (projectCard) {
-            cursorState = { state: "project", text: "" };
-            applyStateToElements();
+        /* Editable fields hand control back to the native
+           caret cursor — the car fades out entirely. */
+        if (target.closest(
+            "input, textarea, select, [contenteditable='true']"
+        )) {
+            return "edit";
+        }
+
+        if (target.closest(".project-slab")) {
+            return "project";
+        }
+
+        if (target.closest(
+            "[data-cursor], a, button, [role='button'], label, " +
+            ".magnetic, .filter-btn, .social-links a, .slab-open, " +
+            ".detail-back, .detail-close, .detail-cta, .detail-next"
+        )) {
+            return "interactive";
+        }
+
+        if (target.closest(
+            "p, h1, h2, h3, h4, h5, h6, span, pre, li, td, blockquote"
+        )) {
+            return "text";
+        }
+
+        return "default";
+    }
+
+
+    function applyState(next) {
+
+        if (next === state) {
             return;
         }
 
-        const labelled = target.closest("[data-cursor]");
+        state = next;
+        targetScale = STATE_SCALES[next] || STATE_SCALES.default;
 
-        if (labelled) {
-            cursorState = {
-                state: labelled.dataset.cursor,
-                text: labelled.dataset.cursorText || ""
-            };
-            applyStateToElements();
-            return;
-        }
-
-        const interactive = target.closest(
-            "a, button, [role='button'], input, textarea, select, label"
-        );
-
-        if (interactive) {
-            cursorState = { state: "link", text: "" };
-            applyStateToElements();
-            return;
-        }
-
-        const textElement = target.closest(
-            "p, h1, h2, h3, h4, h5, h6, span, pre, li"
-        );
-
-        if (textElement) {
-            cursorState = { state: "text", text: "" };
-            applyStateToElements();
-            return;
-        }
-
-        cursorState = { state: "default", text: "" };
-        applyStateToElements();
+        car.dataset.state = next;
     }
 
 
     document.addEventListener(
         "mousemove",
-        updateCursorState,
+        event => {
+
+            showCursor();
+            applyState(stateFor(event.target));
+        },
         { passive: true }
     );
 
 
-    document.addEventListener(
-        "mouseleave",
-        () => {
-            visible = false;
-            document.body.dataset.cursorVisible = "false";
+    /* ---------- Pointer leaves / window loses focus ---------- */
+
+    document.addEventListener("mouseleave", hideCursor);
+
+    window.addEventListener("blur", hideCursor);
+
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+            hideCursor();
         }
-    );
-
-    document.addEventListener(
-        "mouseenter",
-        () => {
-            visible = true;
-            document.body.dataset.cursorVisible = "true";
-        }
-    );
-
-    document.addEventListener(
-        "mousedown",
-        () => {
-            pressed = true;
-            pressedTime = performance.now();
-        }
-    );
-
-    document.addEventListener(
-        "mouseup",
-        () => {
-            pressed = false;
-        }
-    );
+    });
 
 
-    /* ---------- Per-frame smoothing ---------- */
+    /* ---------- Click feedback ---------- */
+
+    document.addEventListener("mousedown", () => {
+        pressed = true;
+        pressedAt = performance.now();
+    }, { passive: true });
+
+    document.addEventListener("mouseup", () => {
+        pressed = false;
+    }, { passive: true });
+
+
+    /* ---------- Resizing ----------
+       Coordinates are viewport-relative, so a resize is
+       already correct; this only keeps the car inside the
+       new bounds while the pointer has not moved yet. */
+
+    window.addEventListener("resize", () => {
+
+        x = MotionUtils.clamp(x, 0, window.innerWidth);
+        y = MotionUtils.clamp(y, 0, window.innerHeight);
+
+        lastX = MotionUtils.clamp(lastX, 0, window.innerWidth);
+        lastY = MotionUtils.clamp(lastY, 0, window.innerHeight);
+    }, { passive: true });
+
+
+    /* ---------- Per-frame smoothing (one rAF, one node) ---------- */
 
     MotionUtils.onFrame(delta => {
 
-        /* Dot follows quickly, ring trails behind — smooth lag. */
-        const dotEase = 1 - Math.pow(0.0001, delta);
-        const ringEase = 1 - Math.pow(0.006, delta);
-        const scaleEase = 1 - Math.pow(0.004, delta);
-
-        dotX = MotionUtils.lerp(dotX, MotionUtils.pointer.x, dotEase);
-        dotY = MotionUtils.lerp(dotY, MotionUtils.pointer.y, dotEase);
-
-        ringX = MotionUtils.lerp(ringX, MotionUtils.pointer.x, ringEase);
-        ringY = MotionUtils.lerp(ringY, MotionUtils.pointer.y, ringEase);
-
-        /* Click bounce: quick squash, springy release. */
-        if (pressed) {
-            downScale = MotionUtils.lerp(downScale, 0.78, 0.35);
-        } else {
-            const elapsed = (performance.now() - pressedTime) / 1000;
-            const spring = Math.max(0, 0.12 * Math.exp(-elapsed * 6) *
-                Math.cos(elapsed * 28));
-            downScale = MotionUtils.lerp(downScale, 1 + spring, 0.3);
+        if (!visible) {
+            return;
         }
 
-        ringScale = MotionUtils.lerp(ringScale, targetRingScale, scaleEase);
+        const dt = Math.min(Math.max(delta, 0), 0.05);
 
-        dot.style.transform =
-            `translate3d(${dotX}px, ${dotY}px, 0) ` +
-            `translate(-50%, -50%) scale(${downScale})`;
+        const follow = 1 - Math.exp(-dt * FOLLOW_RATE);
+        const steerEase = 1 - Math.exp(-dt * STEER_RATE);
+        const scaleEase = 1 - Math.exp(-dt * SCALE_RATE);
 
-        ring.style.transform =
-            `translate3d(${ringX}px, ${ringY}px, 0) ` +
-            `translate(-50%, -50%) scale(${ringScale * downScale})`;
+        const pointerX = MotionUtils.clamp(
+            MotionUtils.pointer.x, 0, window.innerWidth
+        );
+        const pointerY = MotionUtils.clamp(
+            MotionUtils.pointer.y, 0, window.innerHeight
+        );
 
-        /* Label rides inside the expanded ring. */
-        label.style.transform =
-            `translate3d(${ringX}px, ${ringY}px, 0) ` +
-            `translate(-50%, -50%)`;
+        /* Steering: lean toward the direction of travel,
+           clamped to a restrained angle. The nose points
+           "up" at rest, so a heading of 0deg is straight. */
+        const dx = pointerX - lastX;
+        const dy = pointerY - lastY;
+
+        lastX = pointerX;
+        lastY = pointerY;
+
+        if (Math.hypot(dx, dy) > 0.8) {
+
+            let heading = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+
+            while (heading > 180) {
+                heading -= 360;
+            }
+
+            while (heading < -180) {
+                heading += 360;
+            }
+
+            targetSteer = MotionUtils.clamp(
+                heading, -MAX_STEER, MAX_STEER
+            );
+
+        } else {
+            /* At rest the car straightens out. */
+            targetSteer = MotionUtils.lerp(
+                targetSteer, 0, IDLE_STRAIGHTEN
+            );
+        }
+
+        steer = MotionUtils.lerp(steer, targetSteer, steerEase);
+
+
+        /* Click squash + springy release. */
+        if (pressed) {
+            pressFactor = MotionUtils.lerp(pressFactor, PRESS_SCALE, 0.35);
+        } else {
+            const elapsed = (performance.now() - pressedAt) / 1000;
+            const spring = Math.max(
+                0,
+                0.1 * Math.exp(-elapsed * 6) * Math.cos(elapsed * 28)
+            );
+            pressFactor = MotionUtils.lerp(pressFactor, 1 + spring, 0.3);
+        }
+
+
+        x = MotionUtils.lerp(x, pointerX, follow);
+        y = MotionUtils.lerp(y, pointerY, follow);
+
+        scale = MotionUtils.lerp(
+            scale, targetScale * pressFactor, scaleEase
+        );
+
+
+        /* Single transform write per frame. */
+        car.style.transform =
+            `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) ` +
+            `translate(-50%, -50%) ` +
+            `rotate(${steer.toFixed(2)}deg) ` +
+            `scale(${scale.toFixed(3)})`;
     });
 
 
@@ -323,6 +406,7 @@ const Cursor = (() => {
 
 
     function init() {
+        car.dataset.state = "default";
         initMagneticElements();
     }
 

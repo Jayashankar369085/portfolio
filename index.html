@@ -40,7 +40,7 @@
 
     <link rel="stylesheet" href="css/style.css?v=8">
 
-    <link rel="stylesheet" href="css/effects.css?v=6">
+    <link rel="stylesheet" href="css/effects.css?v=7">
 </head>
 
 <body>
@@ -69,11 +69,79 @@
 <div id="cursorSpotlight" aria-hidden="true"></div>
 
 
-<div id="cursorDot" aria-hidden="true"></div>
+<div id="cursorCar" aria-hidden="true">
+    <svg viewBox="0 0 24 48" xmlns="http://www.w3.org/2000/svg"
+         focusable="false">
 
-<div id="cursorRing" aria-hidden="true"></div>
+        <defs>
+            <linearGradient id="carBody" x1="5" y1="2" x2="19" y2="46"
+                            gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#ffffff"/>
+                <stop offset="0.55" stop-color="#eef1f7"/>
+                <stop offset="1" stop-color="#c2c9d9"/>
+            </linearGradient>
 
-<div id="cursorLabel" aria-hidden="true"></div>
+            <linearGradient id="carGlass" x1="7" y1="15" x2="17" y2="28"
+                            gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#a9a4ff"/>
+                <stop offset="1" stop-color="#4b45b6"/>
+            </linearGradient>
+        </defs>
+
+        <!-- Tyres (sit behind the body) -->
+        <g fill="#0e1018">
+            <rect x="2" y="12.4" width="4.2" height="6.6" rx="2.1"/>
+            <rect x="17.8" y="12.4" width="4.2" height="6.6" rx="2.1"/>
+            <rect x="2" y="31.4" width="4.2" height="7.4" rx="2.1"/>
+            <rect x="17.8" y="31.4" width="4.2" height="7.4" rx="2.1"/>
+        </g>
+
+        <!-- Wing mirrors -->
+        <g fill="#8b85ff">
+            <rect x="1.6" y="16.2" width="3.4" height="1.7" rx="0.85"/>
+            <rect x="19" y="16.2" width="3.4" height="1.7" rx="0.85"/>
+        </g>
+
+        <!-- Body: rounded silhouette via a fat round-joined stroke -->
+        <polygon
+            points="12,2.6 15.8,7 18.4,15 19.2,25 18.8,36 17.6,44.4
+                    6.4,44.4 5.2,36 4.8,25 5.6,15 8.2,7"
+            fill="url(#carBody)" stroke="url(#carBody)"
+            stroke-width="3" stroke-linejoin="round"/>
+
+        <!-- Centre stripe -->
+        <rect x="11.35" y="4" width="1.3" height="9.5" rx="0.65"
+              fill="#8b85ff" opacity="0.45"/>
+
+        <!-- Headlights -->
+        <g fill="#c9c5ff">
+            <ellipse cx="9.1" cy="9.6" rx="1.7" ry="1"
+                     transform="rotate(-18 9.1 9.6)"/>
+            <ellipse cx="14.9" cy="9.6" rx="1.7" ry="1"
+                     transform="rotate(18 14.9 9.6)"/>
+        </g>
+
+        <!-- Canopy -->
+        <ellipse cx="12" cy="21.5" rx="5.4" ry="6.4"
+                 fill="url(#carGlass)"/>
+        <path d="M7.6 18.6c2.7-1.8 6.1-1.8 8.8 0"
+              fill="none" stroke="#ffffff" stroke-opacity="0.55"
+              stroke-width="1" stroke-linecap="round"/>
+
+        <!-- Tail lights -->
+        <rect x="8.2" y="38.6" width="7.6" height="1.5" rx="0.75"
+              fill="#b9b5ff"/>
+
+        <!-- Rear wing -->
+        <rect x="5.4" y="41.6" width="13.2" height="2.6" rx="1.3"
+              fill="#d9dee9"/>
+        <rect x="5.4" y="41.6" width="2.2" height="2.6" rx="1.1"
+              fill="#8b85ff"/>
+        <rect x="16.4" y="41.6" width="2.2" height="2.6" rx="1.1"
+              fill="#8b85ff"/>
+
+    </svg>
+</div>
 
 
 <div id="easterTerminal" aria-hidden="true"></div>
@@ -1576,7 +1644,7 @@
 <script src="js/beyond-fx.js?v=1"></script>
 <script src="js/project-fx.js?v=5"></script>
 
-<script src="js/cursor.js?v=2"></script>
+<script src="js/cursor.js?v=3"></script>
 
 <script src="js/skills.js?v=3"></script>
 
