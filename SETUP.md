@@ -46,8 +46,15 @@ click **Run**:
    — seed content copied from your live site (7 projects, Deloitte +
    GE Aerospace experiences, 6 highlights, 6 achievements, 33 skills,
    5 social links, 3 settings).
+3. `supabase/migrations/20261013000001_experiences_featured.sql`
+   — adds the `featured` flag to `experiences` (projects, achievements
+   and skills already have one; highlights use `feature`) and marks
+   Deloitte + GE Aerospace as featured on that first run. Until this
+   runs, the dashboard hides the experience Featured toggle instead of
+   failing saves.
 
-Both files are idempotent — running them twice will not duplicate rows.
+All files are idempotent — running them twice will not duplicate rows
+or overwrite your own Featured choices.
 After running, check **Table Editor** to confirm the tables exist.
 
 ## 3. Create the initial administrator account
@@ -110,6 +117,12 @@ Then open `/admin/`.
   Skills, Social Links, Site Settings.
 - Every list has search, a published/draft filter, up/down reordering,
   preview, publish/unpublish, edit and delete (with confirmation).
+- **Featured toggles**: Projects, Experience, Highlights, Achievements
+  and Skills each have a Featured control. It writes to the row's
+  `featured` column (`feature` for highlights) and changes how the
+  public site shows that item on the next page load — featured projects
+  and achievements get the emphasis treatment, featured experiences get
+  the FEATURED chip, featured skills pin to the top of their card.
 - Saving or publishing a change makes it visible on the public site the
   next time the page loads — no commit or redeploy needed.
 

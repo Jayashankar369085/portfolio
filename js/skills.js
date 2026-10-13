@@ -257,7 +257,25 @@ const Skills = (() => {
                 });
             }
 
-            categories[indexByLabel[label]].skills.push(row.name);
+            categories[indexByLabel[label]].skills.push({
+                name: row.name,
+                featured: Boolean(row.featured)
+            });
+        });
+
+        /* Featured skills pin to the top of their card — a stable
+           partition, so everything else keeps its sort_order — and
+           carry a ★ so the admin toggle is visible on the site. */
+        categories.forEach(category => {
+
+            category.skills.sort((a, b) =>
+                Number(b.featured) - Number(a.featured));
+
+            category.skills = category.skills.map(skill =>
+                skill.featured
+                    ? `${skill.name} ★`
+                    : skill.name
+            );
         });
 
         SKILL_CATEGORIES.length = 0;

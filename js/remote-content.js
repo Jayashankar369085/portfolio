@@ -217,7 +217,7 @@ const RemoteContent = (() => {
             ` : "";
 
             return `
-                <div class="experience-entry"
+                <div class="experience-entry${entry.featured ? " experience-featured" : ""}"
                      data-reveal
                      data-reveal-delay="${index * 120}">
 
@@ -237,6 +237,13 @@ const RemoteContent = (() => {
                             <span class="experience-type">
                                 ${esc(entry.experience_type)}
                             </span>
+
+                            ${entry.featured ? `
+                            <span class="experience-featured-chip">
+                                <i class="bi bi-star-fill"></i>
+                                FEATURED
+                            </span>
+                            ` : ""}
 
                         </div>
 
@@ -434,14 +441,16 @@ const RemoteContent = (() => {
 
         try {
 
-            if (name === "highlights" && window.Content &&
+            if (name === "highlights" &&
+                typeof Content !== "undefined" &&
                 typeof Content.renderHighlights === "function") {
 
                 Content.renderHighlights(rows.map(mapHighlight));
                 return;
             }
 
-            if (name === "skills" && window.Skills &&
+            if (name === "skills" &&
+                typeof Skills !== "undefined" &&
                 typeof Skills.setData === "function") {
 
                 Skills.setData(rows);
@@ -481,13 +490,24 @@ const RemoteContent = (() => {
 
     function refreshReveal() {
 
+        /* Top-level `const` modules (Reveal, Content, Skills, …) are
+           lexical globals: they are NOT properties of `window`, so the
+           guard must use the bare identifier. Checking `window.Reveal`
+           here used to skip the refresh and leave every injected
+           [data-reveal] node at opacity 0 — i.e. "empty" sections. */
         try {
-            if (window.Reveal && typeof Reveal.refresh === "function") {
+            if (typeof Reveal !== "undefined" &&
+                typeof Reveal.refresh === "function") {
                 Reveal.refresh();
+                return;
             }
         } catch (error) {
-            /* Reveal is cosmetic — never block content. */
+            console.warn("Reveal refresh failed:", error);
         }
+
+        /* Fallback: never leave injected content invisible. */
+        document.querySelectorAll("[data-reveal]:not(.reveal-visible)")
+            .forEach(element => element.classList.add("reveal-visible"));
     }
 
 
@@ -540,7 +560,7 @@ const RemoteContent = (() => {
 
         /* Projects also drive the full-screen detail overlay. */
         if (sections.projects && sections.projects.ok &&
-            window.ProjectDetails &&
+            typeof ProjectDetails !== "undefined" &&
             typeof ProjectDetails.setData === "function") {
 
             try {

@@ -1178,6 +1178,54 @@ body.light-theme .navbar.navbar-scrolled {
 }
 
 
+/* Featured experience — stands out like the featured milestone. */
+
+.experience-entry.experience-featured .experience-card {
+
+    border-color: rgba(124, 92, 255, 0.55);
+
+    background:
+        linear-gradient(180deg,
+            rgba(124, 92, 255, 0.10),
+            rgba(124, 92, 255, 0.02) 45%,
+            var(--surface));
+
+    box-shadow: 0 22px 60px -34px rgba(124, 92, 255, 0.9);
+}
+
+
+.experience-entry.experience-featured .experience-card:hover {
+
+    border-color: rgba(124, 92, 255, 0.75);
+}
+
+
+.experience-featured-chip {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.6px;
+
+    color: #c4b5fd;
+
+    background: rgba(124, 92, 255, 0.16);
+
+    border: 1px solid rgba(124, 92, 255, 0.45);
+
+    border-radius: 999px;
+
+    padding: 3px 10px;
+}
+
+
 .experience-meta {
 
     display: flex;

@@ -72,6 +72,52 @@
     }
 
 
+    /* ---------- Error reporting ---------- */
+
+    /* PostgREST errors carry message, code, details and hint — but a
+       HEAD (head:true) response has no body, so supabase-js hands back a
+       bare `{ message: "" }`. Stringifying that renders "[object Object]"
+       in the UI, so every error is formatted field by field instead. */
+    function describeError(error) {
+
+        if (error === null || error === undefined) {
+            return "Unknown error.";
+        }
+
+        if (typeof error === "string") {
+            return error;
+        }
+
+        const parts = [];
+
+        const message =
+            typeof error.message === "string" ? error.message.trim() : "";
+
+        if (message) {
+            parts.push(message);
+        }
+
+        if (error.code) {
+            parts.push(`code ${error.code}`);
+        }
+
+        if (error.details) {
+            parts.push(`details: ${error.details}`);
+        }
+
+        if (error.hint) {
+            parts.push(`hint: ${error.hint}`);
+        }
+
+        if (parts.length === 0) {
+            return "The request failed and the server sent no error details " +
+                   "(count queries are HEAD requests, which carry no body).";
+        }
+
+        return parts.join(" · ");
+    }
+
+
     /* ---------- Toasts ---------- */
 
     function toast(message, kind) {
@@ -365,7 +411,7 @@
                 experience_type: "Job Simulation · Forage",
                 occurred_on: "", date_precision: "day",
                 description: "", skills: [],
-                is_published: true
+                featured: false, is_published: true
             },
             fields: [
                 { key: "organization", label: "Organization",
@@ -386,9 +432,14 @@
                   type: "textarea", required: true },
                 { key: "skills", label: "Skills", type: "lines",
                   hint: "One per line" },
+                { key: "featured", label: "Featured", type: "checkbox",
+                  hint: "Highlights this entry on the public site" },
                 { key: "is_published", label: "Published", type: "checkbox" }
             ],
             primary: row => `${row.organization}${row.title ? " — " + row.title : ""}`,
+            extraBadges: row => row.featured
+                ? `<span class="badge badge-building">Featured</span>`
+                : "",
             meta: row => [
                 row.experience_type,
                 row.occurred_on,
@@ -514,6 +565,9 @@
                 { key: "is_published", label: "Published", type: "checkbox" }
             ],
             primary: row => row.title,
+            extraBadges: row => row.featured
+                ? `<span class="badge badge-building">Featured</span>`
+                : "",
             meta: row => [row.range_label, row.tag, row.description]
                 .filter(Boolean).join("  ·  "),
             searchable: row => [
@@ -552,7 +606,8 @@
                 { key: "icon", label: "Skill icon (optional)",
                   type: "text", optional: true,
                   hint: "Stored for future use, e.g. bi-react" },
-                { key: "featured", label: "Featured", type: "checkbox" },
+                { key: "featured", label: "Featured", type: "checkbox",
+                  hint: "Pins this skill to the top of its category card" },
                 { key: "is_published", label: "Published", type: "checkbox" }
             ],
             primary: row => row.name,
@@ -689,6 +744,48 @@
     }
 
 
+    /* `experiences.featured` comes from a later migration
+       (20261013000001_experiences_featured.sql). If the database
+       has not run it yet, hide the control and say why — otherwise
+       every experience save would fail with a missing-column error,
+       and a dead toggle would look like it worked. */
+    async function probeExperienceFeatured() {
+
+        try {
+
+            const { error } = await supabase
+                .from("experiences")
+                .select("featured")
+                .limit(1);
+
+            const missing = Boolean(error) &&
+                /featured/i.test(error.message || "");
+
+            if (!missing) {
+                return;
+            }
+
+            const fields = ENTITIES.experiences.fields;
+            const index =
+                fields.findIndex(field => field.key === "featured");
+
+            if (index >= 0) {
+                fields.splice(index, 1);
+            }
+
+            toast(
+                "Experiences have no Featured column yet — run " +
+                "supabase/migrations/20261013000001_experiences_featured.sql " +
+                "in the Supabase SQL Editor (SETUP.md, step 2), then reload.",
+                "info"
+            );
+
+        } catch (error) {
+            /* Probe is advisory — keep the control if it cannot run. */
+        }
+    }
+
+
     /* Sentinel so the very first "no session" state still runs
        showLogin() once (a real null would dedupe against this). */
     let handledToken = "\u0000initial";
@@ -727,13 +824,12 @@
             }
 
             showApp(session.user);
+            probeExperienceFeatured();
 
-        } catch (error) {
-
-            showLogin(
-                "Could not verify administrator access: " +
-                (error.message || String(error))
-            );
+        } catch (error) {                showLogin(
+                    "Could not verify administrator access: " +
+                    describeError(error)
+                );
         }
     }
 
@@ -757,11 +853,19 @@
     }
 
 
+    /* Counts must match the real schema: `site_settings` is keyed by
+       `key`, not `id`, so selecting `id` there fails with 42703.
+
+       The count is also fetched as a GET with limit=0 rather than a HEAD
+       request: both return the exact total in Content-Range, but only the
+       GET returns the error body (message/code/details/hint) when the
+       query fails — a HEAD failure surfaces as an empty `{ message: "" }`. */
     async function countRows(table) {
 
         const { count, error } = await supabase
             .from(table)
-            .select("id", { count: "exact", head: true });
+            .select("*", { count: "exact" })
+            .limit(0);
 
         if (error) {
             throw error;
@@ -1171,15 +1275,17 @@
 
         } catch (error) {
 
+            console.error(`Overview render failed on "${state.page}":`, error);
+
             body.innerHTML =
                 `<div class="panel">
                     <div class="empty-state">
                         Could not load this section:
-                        ${esc(error.message || String(error))}
+                        ${esc(describeError(error))}
                     </div>
                 </div>`;
 
-            toast("Load failed: " + (error.message || String(error)), "error");
+            toast("Load failed: " + describeError(error), "error");
         }
     }
 
@@ -1192,11 +1298,28 @@
 
         const keys = Object.keys(ENTITIES);
 
-        const counts = await Promise.all(
-            keys.map(key => countRows(ENTITIES[key].table))
+        /* Each count is independent: one broken table (missing column,
+           revoked permission, typo) must not blank the whole Overview. */
+        async function safeCount(key, table, label) {
+
+            try {
+                return { key, table, label, count: await countRows(table) };
+
+            } catch (error) {
+                console.error(`Overview count failed for "${table}":`, error);
+                return { key, table, label, count: null, error };
+            }
+        }
+
+        const entries = await Promise.all(
+            keys.map(key =>
+                safeCount(key, ENTITIES[key].table, ENTITIES[key].title)
+            ).concat([
+                safeCount("settings", "site_settings", "Settings")
+            ])
         );
 
-        const settingsCount = await countRows("site_settings");
+        const broken = entries.filter(entry => entry.error);
 
         body.innerHTML = `
             <div class="panel">
@@ -1210,18 +1333,35 @@
                     </div>
                 </div>
                 <div class="stat-grid">
-                    ${keys.map((key, index) => `
-                        <button type="button" class="stat-card" data-goto="${key}">
-                            <div class="stat-value">${counts[index]}</div>
-                            <div class="stat-label">${esc(ENTITIES[key].title)}</div>
+                    ${entries.map(entry => `
+                        <button type="button" class="stat-card" data-goto="${entry.key}">
+                            <div class="stat-value">${
+                                entry.count === null ? "—" : entry.count
+                            }</div>
+                            <div class="stat-label">${esc(entry.label)}</div>
                         </button>
                     `).join("")}
-                    <button type="button" class="stat-card" data-goto="settings">
-                        <div class="stat-value">${settingsCount}</div>
-                        <div class="stat-label">Settings</div>
-                    </button>
                 </div>
             </div>
+
+            ${broken.length > 0 ? `
+            <div class="panel">
+                <div class="panel-head">
+                    <div>
+                        <h3>Some counts could not be read</h3>
+                        <div class="row-meta" style="margin-top:4px;">
+                            The rest of the dashboard still works — fix the
+                            query below and reload.
+                        </div>
+                    </div>
+                </div>
+                <ul class="hint-list">
+                    ${broken.map(entry => `
+                        <li><code>${esc(entry.table)}</code> —
+                            ${esc(describeError(entry.error))}</li>
+                    `).join("")}
+                </ul>
+            </div>` : ""}
 
             <div class="panel">
                 <div class="panel-head"><h3>Environment</h3></div>
@@ -1468,7 +1608,7 @@
             toast("Order updated.");
 
         } catch (error) {
-            toast("Reorder failed: " + (error.message || String(error)), "error");
+            toast("Reorder failed: " + describeError(error), "error");
         }
     }
 
@@ -1506,7 +1646,7 @@
 
             toast(
                 "Could not change publication state: " +
-                (error.message || String(error)),
+                describeError(error),
                 "error"
             );
         }
@@ -1553,7 +1693,7 @@
             toast(`${entity.singular} deleted.`);
 
         } catch (error) {
-            toast("Delete failed: " + (error.message || String(error)), "error");
+            toast("Delete failed: " + describeError(error), "error");
         }
     }
 
@@ -1938,7 +2078,7 @@
             } catch (error) {
 
                 toast(
-                    "Save failed: " + (error.message || String(error)),
+                    "Save failed: " + describeError(error),
                     "error"
                 );
 
@@ -2359,7 +2499,7 @@
             try {
                 await supabase.auth.signOut();
             } catch (error) {
-                toast("Sign out failed: " + (error.message || error), "error");
+                toast("Sign out failed: " + describeError(error), "error");
             }
         });
 
@@ -2396,9 +2536,9 @@
             } catch (error) {
 
                 errorBox.textContent =
-                    error.message === "Invalid login credentials"
+                    error && error.message === "Invalid login credentials"
                         ? "Invalid email or password."
-                        : (error.message || String(error));
+                        : describeError(error);
 
                 errorBox.hidden = false;
 
@@ -2441,7 +2581,7 @@
             supabase.auth.getSession()
                 .then(({ data }) => handleSession(data.session))
                 .catch(error => showLogin(
-                    "Session check failed: " + (error.message || error)
+                    "Session check failed: " + describeError(error)
                 ));
         }
     }
