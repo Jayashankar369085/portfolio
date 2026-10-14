@@ -1,9 +1,10 @@
 /* ==================================================
    CUSTOM CURSOR + MAGNETIC ELEMENTS
-   Dot + trailing ring, state-driven labels, click
-   bounce, magnetic attraction. Desktop (fine pointer,
-   motion allowed) only — native cursor untouched on
-   touch devices and under reduced motion.
+   A compact top-down sports car follows the pointer
+   with a slight steering tilt, state-driven labels,
+   click bounce, magnetic attraction. Desktop (fine
+   pointer, motion allowed) only — native cursor
+   untouched on touch devices and under reduced motion.
 ================================================== */
 
 const Cursor = (() => {
@@ -12,28 +13,30 @@ const Cursor = (() => {
         return { init: () => {} };
     }
 
-    const dot = document.getElementById("cursorDot");
-    const ring = document.getElementById("cursorRing");
+    const car = document.getElementById("cursorCar");
     const label = document.getElementById("cursorLabel");
 
-    if (!dot || !ring) {
+    if (!car || !label) {
         return { init: () => {} };
     }
 
 
-    /* ---------- Ring interpolation state ---------- */
+    /* ---------- Car interpolation state ---------- */
 
-    let dotX = window.innerWidth / 2;
-    let dotY = window.innerHeight / 2;
-    let ringX = dotX;
-    let ringY = dotY;
-    let ringScale = 1;
-    let targetRingScale = 1;
+    let carX = window.innerWidth / 2;
+    let carY = window.innerHeight / 2;
 
-    let visible = false;
+    /* Previous pointer x — steering comes from the
+       horizontal delta between frames. */
+    let prevPointerX = MotionUtils.pointer.x;
+    let tilt = 0;
+
     let pressed = false;
     let downScale = 1;
     let pressedTime = 0;
+
+    let stateScale = 1;
+    let targetScale = 1;
 
     /* Set by hover targets: { state, text } */
     let cursorState = { state: "default", text: "" };
@@ -47,6 +50,19 @@ const Cursor = (() => {
         view: "VIEW"
     };
 
+    /* Restrained scale-up on interactive targets — the
+       brighter glow lives in CSS via [data-state]. */
+    const STATE_SCALES = {
+        project: 1.18,
+        explore: 1.16,
+        view: 1.16,
+        link: 1.1,
+        text: 0.88,
+        native: 1,
+        hidden: 0,
+        default: 1
+    };
+
 
     function applyStateToElements() {
 
@@ -54,16 +70,13 @@ const Cursor = (() => {
 
         label.textContent = STATE_LABELS[state] || text || "";
 
-        dot.dataset.state = state;
-        ring.dataset.state = state;
+        car.dataset.state = state;
         label.dataset.state = state;
 
-        targetRingScale =
-            state === "project" ? 3.4 :
-            state === "explore" ? 2.6 :
-            state === "link" ? 1.55 :
-            state === "text" ? 0.62 :
-            state === "hidden" ? 0 : 1;
+        targetScale =
+            Object.prototype.hasOwnProperty.call(STATE_SCALES, state)
+                ? STATE_SCALES[state]
+                : 1;
     }
 
 
@@ -103,6 +116,21 @@ const Cursor = (() => {
             return;
         }
 
+        /* Text entry: park the car and hand the pointer
+           back to the native I-beam (CSS keys off this
+           state too). Checkbox/radio stay custom. */
+        const textInput = target.closest(
+            "input:not([type='checkbox']):not([type='radio']):" +
+            "not([type='button']):not([type='submit']):not([type='reset']), " +
+            "textarea, select, [contenteditable]:not([contenteditable='false'])"
+        );
+
+        if (textInput) {
+            cursorState = { state: "native", text: "" };
+            applyStateToElements();
+            return;
+        }
+
         const interactive = target.closest(
             "a, button, [role='button'], input, textarea, select, label"
         );
@@ -138,7 +166,6 @@ const Cursor = (() => {
     document.addEventListener(
         "mouseleave",
         () => {
-            visible = false;
             document.body.dataset.cursorVisible = "false";
         }
     );
@@ -146,7 +173,6 @@ const Cursor = (() => {
     document.addEventListener(
         "mouseenter",
         () => {
-            visible = true;
             document.body.dataset.cursorVisible = "true";
         }
     );
@@ -171,20 +197,25 @@ const Cursor = (() => {
 
     MotionUtils.onFrame(delta => {
 
-        /* Dot follows quickly, ring trails behind — smooth lag. */
-        const dotEase = 1 - Math.pow(0.0001, delta);
-        const ringEase = 1 - Math.pow(0.006, delta);
+        /* Fast follow — minimal latency, still smooth. */
+        const posEase = 1 - Math.pow(0.000001, delta);
+        const tiltEase = 1 - Math.pow(0.0005, delta);
         const scaleEase = 1 - Math.pow(0.004, delta);
 
-        dotX = MotionUtils.lerp(dotX, MotionUtils.pointer.x, dotEase);
-        dotY = MotionUtils.lerp(dotY, MotionUtils.pointer.y, dotEase);
+        /* Slight steering: horizontal pointer delta → restrained
+           yaw, settling back to straight when the pointer rests. */
+        const stepX = MotionUtils.pointer.x - prevPointerX;
+        prevPointerX = MotionUtils.pointer.x;
 
-        ringX = MotionUtils.lerp(ringX, MotionUtils.pointer.x, ringEase);
-        ringY = MotionUtils.lerp(ringY, MotionUtils.pointer.y, ringEase);
+        const targetTilt = MotionUtils.clamp(stepX * 0.55, -9, 9);
+        tilt = MotionUtils.lerp(tilt, targetTilt, tiltEase);
+
+        carX = MotionUtils.lerp(carX, MotionUtils.pointer.x, posEase);
+        carY = MotionUtils.lerp(carY, MotionUtils.pointer.y, posEase);
 
         /* Click bounce: quick squash, springy release. */
         if (pressed) {
-            downScale = MotionUtils.lerp(downScale, 0.78, 0.35);
+            downScale = MotionUtils.lerp(downScale, 0.82, 0.35);
         } else {
             const elapsed = (performance.now() - pressedTime) / 1000;
             const spring = Math.max(0, 0.12 * Math.exp(-elapsed * 6) *
@@ -192,20 +223,20 @@ const Cursor = (() => {
             downScale = MotionUtils.lerp(downScale, 1 + spring, 0.3);
         }
 
-        ringScale = MotionUtils.lerp(ringScale, targetRingScale, scaleEase);
+        stateScale = MotionUtils.lerp(stateScale, targetScale, scaleEase);
 
-        dot.style.transform =
-            `translate3d(${dotX}px, ${dotY}px, 0) ` +
-            `translate(-50%, -50%) scale(${downScale})`;
+        /* Hotspot (front-centre of the car) stays glued to the
+           pointer — see transform-origin in effects.css. */
+        car.style.transform =
+            `translate3d(${carX}px, ${carY}px, 0) ` +
+            `translate(-50%, -10%) ` +
+            `rotate(${tilt}deg) ` +
+            `scale(${stateScale * downScale})`;
 
-        ring.style.transform =
-            `translate3d(${ringX}px, ${ringY}px, 0) ` +
-            `translate(-50%, -50%) scale(${ringScale * downScale})`;
-
-        /* Label rides inside the expanded ring. */
+        /* Label rides just below the car. */
         label.style.transform =
-            `translate3d(${ringX}px, ${ringY}px, 0) ` +
-            `translate(-50%, -50%)`;
+            `translate3d(${carX}px, ${carY}px, 0) ` +
+            `translate(-50%, -50%) translateY(54px)`;
     });
 
 
@@ -323,6 +354,11 @@ const Cursor = (() => {
 
 
     function init() {
+
+        /* Tells CSS it may hide the native cursor — only ever set
+           on fine pointers with motion allowed (see top guard). */
+        document.body.dataset.cursorActive = "true";
+
         initMagneticElements();
     }
 
